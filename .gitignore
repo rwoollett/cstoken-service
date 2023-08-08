@@ -9,6 +9,8 @@
 .next
 scratch.txt
 api.http
+cstoken.env
+compose.env
 
 # testing
 tmp.html

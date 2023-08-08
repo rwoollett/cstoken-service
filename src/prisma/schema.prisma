@@ -7,27 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
+model Client {
   id        Int     @id @default(autoincrement())
-  title     String
-  body      String
-  published Boolean
+  ip        String
+  name      String
+  connected Boolean
+  requestCS  RequestCS[]
+  acquireCS  AcquireCS[]
 }
 
-model BlogArticle {
-  id       Int           @id @default(autoincrement())
-  slug     String        @unique @db.VarChar(50)
-  comments BlogComment[]
-
-  @@map("blogArticles")
-}
-
-model BlogComment {
+model RequestCS {
   id          Int         @id @default(autoincrement())
   message     String
   publishedAt DateTime    @default(now())
-  articleSlug String
-  article     BlogArticle @relation(fields: [articleSlug], references: [slug])
+  clientId    Int
+  client      Client @relation(fields: [clientId], references: [id])
 
-  @@map("blogComments")
+  @@map("requestCS")
+}
+
+model AcquireCS {
+  id          Int         @id @default(autoincrement())
+  message     String
+  publishedAt DateTime    @default(now())
+  clientId    Int
+  client      Client @relation(fields: [clientId], references: [id])
+
+  @@map("acquireCS")
 }
