@@ -1,0 +1,42 @@
+query BlogCommentsByArticle($articleSlug: String!) {
+  blogCommentsByArticle(articleSlug: $articleSlug) {
+    id
+    message
+    publishedAt
+  }
+}
+
+query ArticleBySlug($slug: String!) {
+  articleBySlug(slug: $slug) {
+    id
+  }
+}
+
+mutation CreateComment($message: String!, $articleSlug: String!) {
+  createComment(message: $message, articleSlug: $articleSlug) {
+    article {
+      slug
+    }
+    message
+    publishedAt
+    id
+  }
+}
+
+mutation CreateArticle($slug: String!) {
+  createArticle(slug: $slug) {
+    slug
+    id
+  }
+}
+
+subscription CommentFeed {
+  newComment {
+    id
+    message
+    publishedAt
+    article {
+      slug
+    }
+  }
+}

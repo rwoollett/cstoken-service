@@ -1,0 +1,141 @@
+
+version: '3'
+services:
+  comments:
+    container_name: comments
+    image: comments-dev:v1.0
+    restart: unless-stopped
+    env_file: compose.env
+    environment:
+      DATABASE_URL: ${COMMENTS_DATABASE_URL}
+      PORT: '3002'      
+      RABBIT_HOST: ${COMMENTS_RABBIT_HOST}
+      RABBIT_USER: ${COMMENTS_RABBIT_USER}
+      RABBIT_PASS: ${COMMENTS_RABBIT_PASS}
+      RABBIT_QUEUE: ${COMMENTS_RABBIT_QUEUE}
+      DEBUG: "AMQPPubSub"
+    ports:
+      - '3002:3002'
+    networks:
+      - strapi
+    depends_on:
+      commentsDB:
+        condition: service_started
+      rabbitMQ:
+        condition: service_healthy
+
+  strapi:
+    container_name: strapi
+    # build: .
+    image: bloggy-dev:v1.0
+    restart: unless-stopped
+    env_file: compose.env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_HOST: strapiDB
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_PORT: ${DATABASE_PORT}      
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      APP_KEYS: ${APP_KEYS}
+      NODE_ENV: ${NODE_ENV}
+      RABBIT_HOST: ${RABBIT_HOST}
+      RABBIT_USER: ${RABBIT_USER}
+      RABBIT_PASS: ${RABBIT_PASS}
+      RABBIT_QUEUE: ${RABBIT_QUEUE}
+      RABBIT_CONSUME_QUEUE: ${RABBIT_CONSUME_QUEUE}
+    volumes:
+      - ./config:/opt/app/config
+      - ./src:/opt/app/src
+      - ./package.json:/opt/package.json
+      - ./yarn.lock:/opt/yarn.lock
+      - ./.env:/opt/app/.env
+      - ./public/uploads:/opt/app/public/uploads
+      - ./tmp:/opt/app/tmp
+    ports:
+      - '1337:1337'
+    networks:
+      - strapi
+    depends_on:
+      strapiDB:
+        condition: service_started
+      rabbitMQ:
+        condition: service_healthy
+      
+  strapiDB:
+    container_name: strapiDB
+    #platform: linux/amd64 #for platform error on Apple M1 chips
+    restart: unless-stopped
+    env_file: compose.env
+    image: postgres:13.6
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - strapi-data:/var/lib/postgresql/data/ #using a volume
+      #- ./data:/var/lib/postgresql/data/ # if you want to use a bind folder
+
+    ports:
+      - '5433:5432'
+    networks:
+      - strapi
+
+  commentsDB:
+    container_name: commentsDB
+    #platform: linux/amd64 #for platform error on Apple M1 chips
+    restart: unless-stopped
+    env_file: compose.env
+    image: postgres:13.6
+    environment:
+      POSTGRES_USER: ${COMMENTS_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${COMMENTS_DATABASE_PASSWORD}
+      POSTGRES_DB: ${COMMENTS_DATABASE_NAME}
+    volumes:
+      - comment-data:/var/lib/postgresql/data/ #using a volume
+
+    ports:
+      - '5435:5432'
+    networks:
+      - strapi
+
+  rabbitMQ:
+    container_name: rabbitMQ
+    image: rabbitmq:3-management
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 30s
+      retries: 10    
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    networks:
+      - strapi
+
+  auth:
+    container_name: auth
+    image:  auth:v1.0
+    env_file: compose.env
+    ports:
+      - 3001:3001
+    environment:
+      PORT: ${AUTH_PORT}
+      MONGO_URI: ${AUTH_MONGO_URI}
+      DOCTYPE: ${AUTH_DOCTYPE}
+      JWT_KEY: ${AUTH_JWT_KEY}
+      AWS_ACCESS_KEY_ID: ${AUTH_AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AUTH_AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AUTH_AWS_DEFAULT_REGION}
+      WHITELIST_CORS: ${AUTH_WHITELIST_CORS}
+
+volumes:
+  strapi-data:
+  comment-data:
+
+networks:
+  strapi:
+    name: Strapi
+    driver: bridge

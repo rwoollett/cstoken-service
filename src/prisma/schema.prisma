@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  body      String
+  published Boolean
+}
+
+model BlogArticle {
+  id       Int           @id @default(autoincrement())
+  slug     String        @unique @db.VarChar(50)
+  comments BlogComment[]
+
+  @@map("blogArticles")
+}
+
+model BlogComment {
+  id          Int         @id @default(autoincrement())
+  message     String
+  publishedAt DateTime    @default(now())
+  articleSlug String
+  article     BlogArticle @relation(fields: [articleSlug], references: [slug])
+
+  @@map("blogComments")
+}
