@@ -4,7 +4,7 @@ const ctx = createTestContext({ portRange: { from: 4000, to: 6000 } });
 
 import { NexusGenFieldTypes } from '../../generated/nexus-typegen';
 
-it('ensures that a comment be created on an article slug', async () => {
+it('ensures that a token request is created for a client', async () => {
 
   // Create the artilce for testing
   // const createArticle: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
@@ -16,10 +16,42 @@ it('ensures that a comment be created on an article slug', async () => {
   //   }
   // `);
 
-  // Create a new comment
-  const createComment: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
+  // Create a new client token request record for enter CS
+  const createRequestCS: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
     mutation {
-      createComment(message: "Is it made", articleSlug: "what-s-inside-a-black-hole") {  
+      createRequestToken(sourceIp: "5020", originatorIp: "5020", parentIp: "5010") {  
+        id
+        message
+        publishedAt 
+        article {
+          slug
+        }
+      }
+    }
+  `);
+
+    // Create a new client token message to deferred ip when leave CS
+    // Is Root node and has token now (part of acquireCS for a nodeIp)
+    // parentIp: is the originator
+    const createLeaveToDeferredCS: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
+    mutation {
+      createAcquireToken(sourceIp: "5020", parentIp: "5010") {  
+        id
+        message
+        publishedAt 
+        article {
+          slug
+        }
+      }
+    }
+  `);
+
+    // Create a new client token message to deferred ip when leave CS
+    // Is Root node and has token now (part of acquireCS for a nodeIp)
+    // parentIp: is the originator
+    const createRelayRequestToNewParnetSourceCS: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
+    mutation {
+      createRequestToken(sourceIp: "5020", parentIp: "5010", originatorIp: "5020") {  
         id
         message
         publishedAt 

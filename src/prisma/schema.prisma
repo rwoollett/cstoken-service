@@ -8,30 +8,36 @@ datasource db {
 }
 
 model Client {
-  id        Int     @id @default(autoincrement())
-  ip        String
+  id        Int         @id @default(autoincrement())
+  ip        String      @unique @db.VarChar(50)
   name      String
   connected Boolean
-  requestCS  RequestCS[]
-  acquireCS  AcquireCS[]
+
+  RequestCS RequestCS[]   @relation(name: "source")
+  RequestOrigin RequestCS[]   @relation(name: "originator")
+  RequestParent RequestCS[]   @relation(name: "parent")
+  AcquireCS AcquireCS[]  
 }
 
 model RequestCS {
-  id          Int         @id @default(autoincrement())
-  message     String
-  publishedAt DateTime    @default(now())
-  clientId    Int
-  client      Client @relation(fields: [clientId], references: [id])
+  id          Int      @id @default(autoincrement())
+  requestedAt DateTime @default(now())
+  sourceIp    String
+  source      Client   @relation(name: "source", fields: [sourceIp], references: [ip])
+  originatorIp    String
+  originator      Client @relation(name: "originator", fields: [originatorIp], references: [ip])
+  parentIp    String
+  parent      Client @relation(name: "parent", fields: [parentIp], references: [ip])
 
   @@map("requestCS")
 }
 
 model AcquireCS {
-  id          Int         @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   message     String
-  publishedAt DateTime    @default(now())
+  publishedAt DateTime @default(now())
   clientId    Int
-  client      Client @relation(fields: [clientId], references: [id])
+  client      Client   @relation(fields: [clientId], references: [id])
 
   @@map("acquireCS")
 }
