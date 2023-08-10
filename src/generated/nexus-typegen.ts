@@ -29,23 +29,30 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Mutation: {};
-  Post: { // root type
-    body?: string | null; // String
-    id?: number | null; // Int
-    published?: boolean | null; // Boolean
-    title?: string | null; // String
-  }
   Query: {};
-  Subscription: {};
-  blogArticle: { // root type
-    id?: number | null; // Int
-    slug: string; // String!
-  }
-  blogComment: { // root type
-    article: NexusGenRootTypes['blogArticle']; // blogArticle!
+  acquireCS: { // root type
+    acquiredAt: string; // String!
     id: number; // Int!
-    message: string; // String!
-    publishedAt: string; // String!
+    ip: string; // String!
+    sourceIp: string; // String!
+  }
+  client: { // root type
+    connected: boolean; // Boolean!
+    id: number; // Int!
+    ip: string; // String!
+    name: string; // String!
+    requestParent: NexusGenRootTypes['requestParent']; // requestParent!
+  }
+  requestCS: { // root type
+    id: number; // Int!
+    parentIp: string; // String!
+    relayed: boolean; // Boolean!
+    requestedAt: string; // String!
+    sourceIp: string; // String!
+  }
+  requestParent: { // root type
+    clientIp: string; // String!
+    id: number; // Int!
   }
 }
 
@@ -61,102 +68,89 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
-    createArticle: NexusGenRootTypes['blogArticle']; // blogArticle!
-    createComment: NexusGenRootTypes['blogComment']; // blogComment!
-    createDraft: NexusGenRootTypes['Post']; // Post!
-    publish: NexusGenRootTypes['Post']; // Post!
-  }
-  Post: { // field return type
-    body: string | null; // String
-    id: number | null; // Int
-    published: boolean | null; // Boolean
-    title: string | null; // String
+    createAcquireCS: NexusGenRootTypes['acquireCS']; // acquireCS!
+    createClient: NexusGenRootTypes['client']; // client!
+    createRequestCS: NexusGenRootTypes['requestCS']; // requestCS!
   }
   Query: { // field return type
-    articleBySlug: NexusGenRootTypes['blogArticle'] | null; // blogArticle
-    blogCommentsByArticle: Array<NexusGenRootTypes['blogComment'] | null> | null; // [blogComment]
-    drafts: Array<NexusGenRootTypes['Post'] | null>; // [Post]!
-    posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    ok: boolean; // Boolean!
   }
-  Subscription: { // field return type
-    commentAdded: NexusGenRootTypes['blogComment'] | null; // blogComment
-    newComment: NexusGenRootTypes['blogComment'] | null; // blogComment
-  }
-  blogArticle: { // field return type
-    id: number | null; // Int
-    slug: string; // String!
-  }
-  blogComment: { // field return type
-    article: NexusGenRootTypes['blogArticle']; // blogArticle!
+  acquireCS: { // field return type
+    acquiredAt: string; // String!
     id: number; // Int!
-    message: string; // String!
-    publishedAt: string; // String!
+    ip: string; // String!
+    sourceIp: string; // String!
+  }
+  client: { // field return type
+    connected: boolean; // Boolean!
+    id: number; // Int!
+    ip: string; // String!
+    name: string; // String!
+    requestParent: NexusGenRootTypes['requestParent']; // requestParent!
+  }
+  requestCS: { // field return type
+    id: number; // Int!
+    parentIp: string; // String!
+    relayed: boolean; // Boolean!
+    requestedAt: string; // String!
+    sourceIp: string; // String!
+  }
+  requestParent: { // field return type
+    clientIp: string; // String!
+    id: number; // Int!
   }
 }
 
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
-    createArticle: 'blogArticle'
-    createComment: 'blogComment'
-    createDraft: 'Post'
-    publish: 'Post'
-  }
-  Post: { // field return type name
-    body: 'String'
-    id: 'Int'
-    published: 'Boolean'
-    title: 'String'
+    createAcquireCS: 'acquireCS'
+    createClient: 'client'
+    createRequestCS: 'requestCS'
   }
   Query: { // field return type name
-    articleBySlug: 'blogArticle'
-    blogCommentsByArticle: 'blogComment'
-    drafts: 'Post'
-    posts: 'Post'
+    ok: 'Boolean'
   }
-  Subscription: { // field return type name
-    commentAdded: 'blogComment'
-    newComment: 'blogComment'
-  }
-  blogArticle: { // field return type name
+  acquireCS: { // field return type name
+    acquiredAt: 'String'
     id: 'Int'
-    slug: 'String'
+    ip: 'String'
+    sourceIp: 'String'
   }
-  blogComment: { // field return type name
-    article: 'blogArticle'
+  client: { // field return type name
+    connected: 'Boolean'
     id: 'Int'
-    message: 'String'
-    publishedAt: 'String'
+    ip: 'String'
+    name: 'String'
+    requestParent: 'requestParent'
+  }
+  requestCS: { // field return type name
+    id: 'Int'
+    parentIp: 'String'
+    relayed: 'Boolean'
+    requestedAt: 'String'
+    sourceIp: 'String'
+  }
+  requestParent: { // field return type name
+    clientIp: 'String'
+    id: 'Int'
   }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createArticle: { // args
-      slug: string; // String!
+    createAcquireCS: { // args
+      ip: string; // String!
+      sourceIp: string; // String!
     }
-    createComment: { // args
-      articleSlug: string; // String!
-      message: string; // String!
+    createClient: { // args
+      connected: boolean; // Boolean!
+      ip: string; // String!
+      name: string; // String!
     }
-    createDraft: { // args
-      body: string; // String!
-      title: string; // String!
-    }
-    publish: { // args
-      draftId: number; // Int!
-    }
-  }
-  Query: {
-    articleBySlug: { // args
-      slug: string; // String!
-    }
-    blogCommentsByArticle: { // args
-      articleSlug: string; // String!
-    }
-  }
-  Subscription: {
-    commentAdded: { // args
-      articleSlug: string; // String!
+    createRequestCS: { // args
+      parentIp: string; // String!
+      relayed: boolean; // Boolean!
+      sourceIp: string; // String!
     }
   }
 }

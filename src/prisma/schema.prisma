@@ -8,36 +8,45 @@ datasource db {
 }
 
 model Client {
-  id        Int         @id @default(autoincrement())
-  ip        String      @unique @db.VarChar(50)
-  name      String
-  connected Boolean
+  id            Int           @id @default(autoincrement())
+  ip            String        @unique @db.VarChar(50)
+  name          String
+  connected     Boolean       @default(false)
+  parentIp      String        @unique @db.VarChar(50)
+  RequestParent RequestParent @relation(fields: [parentIp], references: [clientIp])
+  RequestCS     RequestCS[]   @relation(name: "source")
+  AcquireCS     AcquireCS[]   @relation(name: "acquire")
+}
 
-  RequestCS RequestCS[]   @relation(name: "source")
-  RequestOrigin RequestCS[]   @relation(name: "originator")
-  RequestParent RequestCS[]   @relation(name: "parent")
-  AcquireCS AcquireCS[]  
+model RequestParent {
+  id        Int         @id @default(autoincrement())
+  clientIp  String      @unique @db.VarChar(50)
+  Client    Client?
+  RequestCS RequestCS[] @relation(name: "parent")
+  AcquireCS AcquireCS[] @relation(name: "source")
+
+  //  @@map("requestParent")
 }
 
 model RequestCS {
-  id          Int      @id @default(autoincrement())
-  requestedAt DateTime @default(now())
+  id          Int           @id @default(autoincrement())
+  requestedAt DateTime      @default(now())
+  relayed     Boolean       @default(false)
   sourceIp    String
-  source      Client   @relation(name: "source", fields: [sourceIp], references: [ip])
-  originatorIp    String
-  originator      Client @relation(name: "originator", fields: [originatorIp], references: [ip])
+  source      Client        @relation(name: "source", fields: [sourceIp], references: [ip])
   parentIp    String
-  parent      Client @relation(name: "parent", fields: [parentIp], references: [ip])
+  parent      RequestParent @relation(name: "parent", fields: [parentIp], references: [clientIp])
 
-  @@map("requestCS")
+  //  @@map("requestCS")
 }
 
 model AcquireCS {
-  id          Int      @id @default(autoincrement())
-  message     String
-  publishedAt DateTime @default(now())
-  clientId    Int
-  client      Client   @relation(fields: [clientId], references: [id])
+  id         Int           @id @default(autoincrement())
+  acquiredAt DateTime      @default(now())
+  ip         String
+  client     Client        @relation(name: "acquire", fields: [ip], references: [ip])
+  sourceIp   String
+  source     RequestParent @relation(name: "source", fields: [sourceIp], references: [clientIp])
 
-  @@map("acquireCS")
+  //  @@map("acquireCS")
 }

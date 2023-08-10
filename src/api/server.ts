@@ -23,6 +23,7 @@ const app = express()
 const httpServer = createServer(app)
 
 async function start() {
+
   if (!process.env.RABBIT_USER) {
     throw new Error('RABBIT_USER must be defined');
   }
@@ -33,19 +34,24 @@ async function start() {
     throw new Error('RABBIT_HOST must be defined');
   }
 
-  await rabbitWrapper.connect(
-    process.env.RABBIT_USER,
-    process.env.RABBIT_PASS,
-    process.env.RABBIT_HOST
-  );
-  const pubsub = new AMQPPubSub({
-    connection: rabbitWrapper.client
-  });
-
-
-  const context: Context = {
+  let context: Context = {
     prisma: prisma,
-    pubsub: pubsub,
+    pubsub: null
+  }
+
+  try {
+    await rabbitWrapper.connect(
+      process.env.RABBIT_USER,
+      process.env.RABBIT_PASS,
+      process.env.RABBIT_HOST
+    );
+    const pubsub = new AMQPPubSub({
+      connection: rabbitWrapper.client
+    });
+    context.pubsub = pubsub;
+
+  } catch (e) {
+    console.log('RabbitMQ connect: ', e);
   }
 
   /** Create WS Server */
@@ -98,8 +104,8 @@ async function start() {
     });
 
     // Start listener on rabbit to consume
-    listenerArticlePublished = new ArticlePublishedListener(rabbitWrapper.client, apolloClient);
-    listenerArticlePublished.listen();
+    //listenerArticlePublished = new ArticlePublishedListener(rabbitWrapper.client, apolloClient);
+    //listenerArticlePublished.listen();
 
 
   } catch (error) {
@@ -109,8 +115,8 @@ async function start() {
   let closed: boolean[] = [false, false, false];
   process.on('SIGINT', async function () {
     try {
-      !closed[0] && mainServer.close(async (err) => {
-        console.log('Closing  http listener', err);
+      !closed[0] && mainServer.close(async () => {
+        console.log('Closing  http listener');
         closed[0] = true;
       })
       await server.stop();
@@ -126,4 +132,6 @@ async function start() {
 
 start().then(() => {
   console.log("Started");
+}).catch((e) => {
+  console.log(e);
 });

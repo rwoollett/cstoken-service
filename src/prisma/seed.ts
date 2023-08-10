@@ -8,10 +8,11 @@ import { PrismaClient } from "@prisma/client";
       }
     }
   });
-  //await prismaTest.$executeRaw`TRUNCATE TABLE "Post" RESTART IDENTITY;`;
-  //await prismaTest.blogComment.deleteMany();
+  await prismaTest.$executeRaw`
+  TRUNCATE TABLE "RequestParent" RESTART IDENTITY CASCADE;
+  `;
   prismaTest.$disconnect();
 
 })();
-  
-export {};
+
+export { };

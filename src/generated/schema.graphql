@@ -3,42 +3,49 @@
 
 
 type Mutation {
-  createArticle(slug: String!): blogArticle!
-  createComment(articleSlug: String!, message: String!): blogComment!
-  createDraft(body: String!, title: String!): Post!
-  publish(draftId: Int!): Post!
-}
-
-type Post {
-  body: String
-  id: Int
-  published: Boolean
-  title: String
+  createAcquireCS(ip: String!, sourceIp: String!): acquireCS!
+  createClient(connected: Boolean!, ip: String!, name: String!): client!
+  createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): requestCS!
 }
 
 type Query {
-  articleBySlug(slug: String!): blogArticle
-  blogCommentsByArticle(articleSlug: String!): [blogComment]
-  drafts: [Post]!
-  posts: [Post]
+  ok: Boolean!
 }
 
-type Subscription {
-  commentAdded(articleSlug: String!): blogComment
-  newComment: blogComment
-}
-
-"""Local table of blog articles for comments"""
-type blogArticle {
-  id: Int
-  slug: String!
-}
-
-"""Blog Comment"""
-type blogComment {
-  """Article commented on by its unique slug"""
-  article: blogArticle!
+"""A client ip takes ownership of CS token from the sourceIp"""
+type acquireCS {
+  acquiredAt: String!
   id: Int!
-  message: String!
-  publishedAt: String!
+  ip: String!
+  sourceIp: String!
+}
+
+"""Clients to request and acquire the single token for CS"""
+type client {
+  connected: Boolean!
+  id: Int!
+  ip: String!
+  name: String!
+
+  """
+  The client ip associated request parent record(always the same two record using ip)
+  """
+  requestParent: requestParent!
+}
+
+"""
+A request for CS from a client source ip to its currently known parent ip in the distributed tree
+"""
+type requestCS {
+  id: Int!
+  parentIp: String!
+  relayed: Boolean!
+  requestedAt: String!
+  sourceIp: String!
+}
+
+"""Clients to request and acquire the single token for CS"""
+type requestParent {
+  clientIp: String!
+  id: Int!
 }

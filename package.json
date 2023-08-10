@@ -9,7 +9,7 @@
     "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only src/graphql/schema.ts",
-    "test": "npm -s run clean && npm run generate:nexus && jest",
+    "test": "npm run generate:nexus && jest",
     "gqlgen": "graphql-codegen --config src/codegen.ts"
   },
   "keywords": [
