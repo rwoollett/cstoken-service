@@ -2,18 +2,8 @@
 ### Do not make changes to this file directly
 
 
-type Mutation {
-  createAcquireCS(ip: String!, sourceIp: String!): acquireCS!
-  createClient(connected: Boolean!, ip: String!, name: String!): client!
-  createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): requestCS!
-}
-
-type Query {
-  ok: Boolean!
-}
-
 """A client ip takes ownership of CS token from the sourceIp"""
-type acquireCS {
+type AcquireCS {
   acquiredAt: String!
   id: Int!
   ip: String!
@@ -21,7 +11,7 @@ type acquireCS {
 }
 
 """Clients to request and acquire the single token for CS"""
-type client {
+type Client {
   connected: Boolean!
   id: Int!
   ip: String!
@@ -30,13 +20,23 @@ type client {
   """
   The client ip associated request parent record(always the same two record using ip)
   """
-  requestParent: requestParent!
+  requestParent: RequestParent!
+}
+
+type Mutation {
+  createAcquireCS(ip: String!, sourceIp: String!): AcquireCS!
+  createClient(connected: Boolean!, ip: String!, name: String!): Client!
+  createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): RequestCS!
+}
+
+type Query {
+  ok: Boolean!
 }
 
 """
 A request for CS from a client source ip to its currently known parent ip in the distributed tree
 """
-type requestCS {
+type RequestCS {
   id: Int!
   parentIp: String!
   relayed: Boolean!
@@ -45,7 +45,7 @@ type requestCS {
 }
 
 """Clients to request and acquire the single token for CS"""
-type requestParent {
+type RequestParent {
   clientIp: String!
   id: Int!
 }

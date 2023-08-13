@@ -28,29 +28,29 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
-  Mutation: {};
-  Query: {};
-  acquireCS: { // root type
+  AcquireCS: { // root type
     acquiredAt: string; // String!
     id: number; // Int!
     ip: string; // String!
     sourceIp: string; // String!
   }
-  client: { // root type
+  Client: { // root type
     connected: boolean; // Boolean!
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
-    requestParent: NexusGenRootTypes['requestParent']; // requestParent!
+    requestParent: NexusGenRootTypes['RequestParent']; // RequestParent!
   }
-  requestCS: { // root type
+  Mutation: {};
+  Query: {};
+  RequestCS: { // root type
     id: number; // Int!
     parentIp: string; // String!
     relayed: boolean; // Boolean!
     requestedAt: string; // String!
     sourceIp: string; // String!
   }
-  requestParent: { // root type
+  RequestParent: { // root type
     clientIp: string; // String!
     id: number; // Int!
   }
@@ -67,70 +67,70 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
-  Mutation: { // field return type
-    createAcquireCS: NexusGenRootTypes['acquireCS']; // acquireCS!
-    createClient: NexusGenRootTypes['client']; // client!
-    createRequestCS: NexusGenRootTypes['requestCS']; // requestCS!
-  }
-  Query: { // field return type
-    ok: boolean; // Boolean!
-  }
-  acquireCS: { // field return type
+  AcquireCS: { // field return type
     acquiredAt: string; // String!
     id: number; // Int!
     ip: string; // String!
     sourceIp: string; // String!
   }
-  client: { // field return type
+  Client: { // field return type
     connected: boolean; // Boolean!
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
-    requestParent: NexusGenRootTypes['requestParent']; // requestParent!
+    requestParent: NexusGenRootTypes['RequestParent']; // RequestParent!
   }
-  requestCS: { // field return type
+  Mutation: { // field return type
+    createAcquireCS: NexusGenRootTypes['AcquireCS']; // AcquireCS!
+    createClient: NexusGenRootTypes['Client']; // Client!
+    createRequestCS: NexusGenRootTypes['RequestCS']; // RequestCS!
+  }
+  Query: { // field return type
+    ok: boolean; // Boolean!
+  }
+  RequestCS: { // field return type
     id: number; // Int!
     parentIp: string; // String!
     relayed: boolean; // Boolean!
     requestedAt: string; // String!
     sourceIp: string; // String!
   }
-  requestParent: { // field return type
+  RequestParent: { // field return type
     clientIp: string; // String!
     id: number; // Int!
   }
 }
 
 export interface NexusGenFieldTypeNames {
-  Mutation: { // field return type name
-    createAcquireCS: 'acquireCS'
-    createClient: 'client'
-    createRequestCS: 'requestCS'
-  }
-  Query: { // field return type name
-    ok: 'Boolean'
-  }
-  acquireCS: { // field return type name
+  AcquireCS: { // field return type name
     acquiredAt: 'String'
     id: 'Int'
     ip: 'String'
     sourceIp: 'String'
   }
-  client: { // field return type name
+  Client: { // field return type name
     connected: 'Boolean'
     id: 'Int'
     ip: 'String'
     name: 'String'
-    requestParent: 'requestParent'
+    requestParent: 'RequestParent'
   }
-  requestCS: { // field return type name
+  Mutation: { // field return type name
+    createAcquireCS: 'AcquireCS'
+    createClient: 'Client'
+    createRequestCS: 'RequestCS'
+  }
+  Query: { // field return type name
+    ok: 'Boolean'
+  }
+  RequestCS: { // field return type name
     id: 'Int'
     parentIp: 'String'
     relayed: 'Boolean'
     requestedAt: 'String'
     sourceIp: 'String'
   }
-  requestParent: { // field return type name
+  RequestParent: { // field return type name
     clientIp: 'String'
     id: 'Int'
   }

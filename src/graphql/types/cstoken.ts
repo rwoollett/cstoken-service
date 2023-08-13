@@ -17,8 +17,8 @@ import {
 /**
  * RequestParent
  */
-export const requestParent = objectType({
-  name: 'requestParent',
+export const RequestParent = objectType({
+  name: 'RequestParent',
   definition(t) {
     t.nonNull.int('id')
     t.nonNull.string('clientIp')
@@ -29,15 +29,15 @@ export const requestParent = objectType({
 /**
  * Client
  */
-export const client = objectType({
-  name: 'client',
+export const Client = objectType({
+  name: 'Client',
   definition(t) {
     t.nonNull.int('id')
     t.nonNull.string('ip')
     t.nonNull.string('name')
     t.nonNull.boolean('connected')
     t.nonNull.field('requestParent', {
-      type: requestParent,
+      type: RequestParent,
       description: "The client ip associated request parent record(always the same two record using ip)"
     })
   },
@@ -48,8 +48,8 @@ export const client = objectType({
 /**
  * RequestCS
  */
-export const requestCS = objectType({
-  name: 'requestCS',
+export const RequestCS = objectType({
+  name: 'RequestCS',
   definition(t) {
     t.nonNull.int('id')
     t.nonNull.string('requestedAt')
@@ -63,8 +63,8 @@ export const requestCS = objectType({
 /**
  * AcquireCS
  */
-export const acquireCS = objectType({
-  name: 'acquireCS',
+export const AcquireCS = objectType({
+  name: 'AcquireCS',
   definition(t) {
     t.nonNull.int('id')
     t.nonNull.string('ip')
@@ -78,7 +78,7 @@ export const CSTokenMutations = extendType({
   type: 'Mutation',
   definition(t) {
     t.nonNull.field('createClient', {
-      type: 'client',
+      type: 'Client',
       args: {
         ip: nonNull(stringArg()),
         name: nonNull(stringArg()),
@@ -87,7 +87,7 @@ export const CSTokenMutations = extendType({
       resolve: createClientResolver
     });
     t.nonNull.field('createRequestCS', {
-      type: 'requestCS',
+      type: 'RequestCS',
       args: {
         sourceIp: nonNull(stringArg()),
         parentIp: nonNull(stringArg()),
@@ -96,7 +96,7 @@ export const CSTokenMutations = extendType({
       resolve: createRequestCSResolver
     });
     t.nonNull.field('createAcquireCS', {
-      type: 'acquireCS',
+      type: 'AcquireCS',
       args: {
         ip: nonNull(stringArg()),
         sourceIp: nonNull(stringArg())

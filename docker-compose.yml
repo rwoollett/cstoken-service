@@ -5,7 +5,7 @@ services:
     container_name: cstoken
     image: cstoken-dev:v1.0
     restart: unless-stopped
-    env_file: compose.env
+    env_file: .env
     environment:
       DATABASE_URL: ${CSTOKEN_DATABASE_URL}
       PORT: '3002'      
@@ -19,7 +19,7 @@ services:
     networks:
       - cstoken-network
     depends_on:
-      commentsDB:
+      cstokenDB:
         condition: service_started
       rabbitMQ:
         condition: service_healthy
@@ -29,7 +29,7 @@ services:
     container_name: cstokenDB
     #platform: linux/amd64 #for platform error on Apple M1 chips
     restart: unless-stopped
-    env_file: compose.env
+    env_file: .env
     image: postgres:13.6
     environment:
       POSTGRES_USER: ${CSTOKEN_DATABASE_USERNAME}
