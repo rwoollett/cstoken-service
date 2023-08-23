@@ -12,6 +12,7 @@ api.http
 cstoken.env
 compose.env
 IntrospectionQuery.*
+GeneratedCode.hpp
 
 # testing
 tmp.html
