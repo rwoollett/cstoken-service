@@ -86,7 +86,7 @@ export interface NexusGenFieldTypes {
     createRequestCS: NexusGenRootTypes['RequestCS']; // RequestCS!
   }
   Query: { // field return type
-    ok: boolean; // Boolean!
+    getClients: Array<NexusGenRootTypes['Client'] | null>; // [Client]!
   }
   RequestCS: { // field return type
     id: number; // Int!
@@ -121,7 +121,7 @@ export interface NexusGenFieldTypeNames {
     createRequestCS: 'RequestCS'
   }
   Query: { // field return type name
-    ok: 'Boolean'
+    getClients: 'Client'
   }
   RequestCS: { // field return type name
     id: 'Int'

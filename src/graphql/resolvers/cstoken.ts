@@ -1,6 +1,28 @@
 import { FieldResolver } from "nexus";
-import { CommentCreatedEvent, Subjects } from "../../events";
-import { RequestParent } from "@prisma/client";
+
+export const getClientsResolver: FieldResolver<
+  "Query",
+  "getClients"
+> = async (_, { }, { prisma, pubsub }) => {
+  const clients = await prisma.client.findMany({
+    select: {
+      id: true,
+      ip: true,
+      name: true,
+      connected: true,
+      RequestParent: true,
+    }
+  });
+
+  return [...clients].map((client) => (
+    {
+      ...client, requestParent: {
+        id: client.RequestParent.id,
+        clientIp: client.RequestParent.clientIp
+      }
+    }
+  ));
+};
 
 export const createClientResolver: FieldResolver<
   "Mutation", "createClient"
@@ -46,7 +68,7 @@ export const createRequestCSResolver: FieldResolver<
     data: {
       sourceIp,
       parentIp,
-      relayed      
+      relayed
     }
   });
 
@@ -73,7 +95,7 @@ export const createAcquireCSResolver: FieldResolver<
 > = async (_, { ip, sourceIp }, { prisma, pubsub }) => {
   const newAcquireCS = await prisma.acquireCS.create({
     data: {
-      ip, 
+      ip,
       sourceIp,
     }
   });

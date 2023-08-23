@@ -7,6 +7,7 @@ import {
 } from 'nexus';
 import { extendType } from 'nexus'
 import {
+  getClientsResolver,
   createClientResolver,
   createRequestCSResolver,
   createAcquireCSResolver
@@ -72,6 +73,17 @@ export const AcquireCS = objectType({
     t.nonNull.string('acquiredAt')
   },
   description: "A client ip takes ownership of CS token from the sourceIp"
+});
+
+
+export const CSTokenQuery = extendType({
+  type: 'Query',
+  definition(t) {
+    t.field('getClients', {
+      type: nonNull(list('Client')),
+      resolve: getClientsResolver
+    });
+  },
 });
 
 export const CSTokenMutations = extendType({

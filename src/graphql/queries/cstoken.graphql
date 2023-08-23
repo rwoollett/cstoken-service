@@ -8,3 +8,9 @@ mutation CreateRequestCS ($sourceIp: String!, $parentIp: String!, $relayed: Bool
   }
 }
 
+query GetClients {
+  getClients {
+    ip
+    name
+  }
+}

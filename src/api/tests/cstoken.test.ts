@@ -4,6 +4,68 @@ const ctx = createTestContext({ portRange: { from: 4000, to: 6000 } });
 
 import { NexusGenFieldTypes } from '../../generated/nexus-typegen';
 
+it('returns list of clients', async () => {
+  // Create two client
+
+  await ctx.prisma.requestParent.create({
+    data: {
+      clientIp: "5010",
+    }
+  });
+  await ctx.prisma.requestParent.create({
+    data: {
+      clientIp: "5020",
+    }
+  });
+  await ctx.prisma.client.create({
+    data: {
+      ip: "5020",
+      name: "Lemon",
+      connected: false,
+      parentIp: "5020"
+    }
+  });
+  await ctx.prisma.client.create({
+    data: {
+      ip: "5010",
+      name: "Pear",
+      connected: false,
+      parentIp: "5010"
+    }
+  });
+
+  const getClients: NexusGenFieldTypes["Query"] = await ctx.client.request(`
+  query GetClients {
+    getClients {
+      ip
+      name
+      requestParent {
+        clientIp
+      }
+    }
+  }  `);
+
+  expect(getClients.getClients).toMatchInlineSnapshot(`
+[
+  {
+    "ip": "5020",
+    "name": "Lemon",
+    "requestParent": {
+      "clientIp": "5020",
+    },
+  },
+  {
+    "ip": "5010",
+    "name": "Pear",
+    "requestParent": {
+      "clientIp": "5010",
+    },
+  },
+]
+`);
+
+});
+
 it('ensures that a token request is created for a client', async () => {
 
   await ctx.prisma.requestParent.create({
@@ -21,7 +83,7 @@ it('ensures that a token request is created for a client', async () => {
       ip: "5020",
       name: "Lemon",
       connected: false,
-      parentIp: "5010"
+      parentIp: "5020"
     }
   });
 
