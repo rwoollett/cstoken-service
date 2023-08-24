@@ -14,6 +14,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  RangePort: { // input type
+    from: number; // Int!
+    to: number; // Int!
+  }
 }
 
 export interface NexusGenEnums {
@@ -153,6 +157,11 @@ export interface NexusGenArgTypes {
       sourceIp: string; // String!
     }
   }
+  Query: {
+    getClients: { // args
+      range: NexusGenInputs['RangePort']; // RangePort!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
@@ -163,7 +172,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 

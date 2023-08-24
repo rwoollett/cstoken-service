@@ -35,30 +35,35 @@ it('returns list of clients', async () => {
   });
 
   const getClients: NexusGenFieldTypes["Query"] = await ctx.client.request(`
-  query GetClients {
-    getClients {
+  query GetClients($range: RangePort!) {
+    getClients(range: $range) {
       ip
       name
       requestParent {
         clientIp
       }
     }
-  }  `);
+  }  `, {
+    range: {
+      from: 5010,
+      to: 5020
+    }
+  });
 
   expect(getClients.getClients).toMatchInlineSnapshot(`
 [
-  {
-    "ip": "5020",
-    "name": "Lemon",
-    "requestParent": {
-      "clientIp": "5020",
-    },
-  },
   {
     "ip": "5010",
     "name": "Pear",
     "requestParent": {
       "clientIp": "5010",
+    },
+  },
+  {
+    "ip": "5020",
+    "name": "Lemon",
+    "requestParent": {
+      "clientIp": "5020",
     },
   },
 ]

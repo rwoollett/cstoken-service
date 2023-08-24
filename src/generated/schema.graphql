@@ -30,7 +30,15 @@ type Mutation {
 }
 
 type Query {
-  getClients: [Client]!
+  getClients(range: RangePort!): [Client]!
+}
+
+"""
+Port range for list of clients. Ie. all from 5010 to 5020 (from and to)
+"""
+input RangePort {
+  from: Int!
+  to: Int!
 }
 
 """

@@ -1,9 +1,10 @@
+import { eq } from "lodash";
 import { FieldResolver } from "nexus";
 
 export const getClientsResolver: FieldResolver<
   "Query",
   "getClients"
-> = async (_, { }, { prisma, pubsub }) => {
+> = async (_, { range }, { prisma, pubsub }) => {
   const clients = await prisma.client.findMany({
     select: {
       id: true,
@@ -11,6 +12,12 @@ export const getClientsResolver: FieldResolver<
       name: true,
       connected: true,
       RequestParent: true,
+    },
+    where: {
+      ip: {
+        lte: range.to.toString(),
+        gte: range.from.toString()
+      }
     }
   });
 

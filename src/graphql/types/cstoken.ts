@@ -1,5 +1,6 @@
 import {
   booleanArg,
+  inputObjectType,
   list,
   nonNull,
   objectType,
@@ -75,12 +76,24 @@ export const AcquireCS = objectType({
   description: "A client ip takes ownership of CS token from the sourceIp"
 });
 
+export const RangePort = inputObjectType({
+  name: 'RangePort',
+  definition(t) {
+    t.nonNull.int('from')
+    t.nonNull.int('to')
+  },
+  description: "Port range for list of clients. Ie. all from 5010 to 5020 (from and to)"
+});
+
 
 export const CSTokenQuery = extendType({
   type: 'Query',
   definition(t) {
     t.field('getClients', {
       type: nonNull(list('Client')),
+      args: {
+        range: nonNull(RangePort)
+      },
       resolve: getClientsResolver
     });
   },
