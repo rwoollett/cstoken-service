@@ -1,5 +1,6 @@
 import { eq } from "lodash";
 import { FieldResolver } from "nexus";
+import { RequestCSCreatedEvent, Subjects } from "../../events";
 
 export const getClientsResolver: FieldResolver<
   "Query",
@@ -27,6 +28,33 @@ export const getClientsResolver: FieldResolver<
         id: client.RequestParent.id,
         clientIp: client.RequestParent.clientIp
       }
+    }
+  ));
+};
+
+export const getRequestCSResolver: FieldResolver<
+  "Query",
+  "getRequestCS"
+> = async (_, { ip }, { prisma, pubsub }) => {
+  const requests = await prisma.requestCS.findMany({
+    select: {
+      id: true,
+      sourceIp: true,
+      parentIp: true,
+      requestedAt: true,
+      relayed: true
+    },
+    where: {
+      sourceIp: {
+        equals: ip
+      }
+    }
+  });
+
+  return [...requests].map((requestCS) => (
+    {
+      ...requestCS,
+      requestedAt: requestCS.requestedAt.toISOString()
     }
   ));
 };
@@ -79,14 +107,14 @@ export const createRequestCSResolver: FieldResolver<
     }
   });
 
-  // pubsub && pubsub.publish('commentAdded',
-  //   {
-  //     subject: Subjects.CommentCreated,
-  //     data: {
-  //       ...newComment,
-  //       publishedAt: newComment.publishedAt.toISOString()
-  //     }
-  //   } as CommentCreatedEvent);
+  pubsub && pubsub.publish('requestCS',
+    {
+      subject: Subjects.RequestCSCreated,
+      data: {
+        ...newRequestCS,
+        requestedAt: newRequestCS.requestedAt.toISOString()
+      }
+    } as RequestCSCreatedEvent);
 
   return {
     id: newRequestCS.id,
@@ -124,14 +152,13 @@ export const createAcquireCSResolver: FieldResolver<
   }
 };
 
-// export const newCommentResolver = (payload: CommentCreatedEvent) => {
-//   const { data: comment } = payload;
-//   return {
-//     id: comment.id,
-//     message: comment.message,
-//     publishedAt: comment.publishedAt,
-//     article: {
-//       slug: comment.articleSlug
-//     }
-//   };
-// };
+export const subcribeRequestCSResolver = (payload: RequestCSCreatedEvent) => {
+  const { data: requestCS } = payload;
+  return {
+    id: requestCS.id,
+    sourceIp: requestCS.sourceIp,
+    parentIp: requestCS.parentIp,
+    requestedAt: requestCS.requestedAt,
+    relayed: requestCS.relayed
+  };
+};

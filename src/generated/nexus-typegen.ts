@@ -58,6 +58,7 @@ export interface NexusGenObjects {
     clientIp: string; // String!
     id: number; // Int!
   }
+  Subscription: {};
 }
 
 export interface NexusGenInterfaces {
@@ -91,6 +92,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getClients: Array<NexusGenRootTypes['Client'] | null>; // [Client]!
+    getRequestCS: Array<NexusGenRootTypes['RequestCS'] | null>; // [RequestCS]!
   }
   RequestCS: { // field return type
     id: number; // Int!
@@ -102,6 +104,9 @@ export interface NexusGenFieldTypes {
   RequestParent: { // field return type
     clientIp: string; // String!
     id: number; // Int!
+  }
+  Subscription: { // field return type
+    requestCS: NexusGenRootTypes['RequestCS'] | null; // RequestCS
   }
 }
 
@@ -126,6 +131,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getClients: 'Client'
+    getRequestCS: 'RequestCS'
   }
   RequestCS: { // field return type name
     id: 'Int'
@@ -137,6 +143,9 @@ export interface NexusGenFieldTypeNames {
   RequestParent: { // field return type name
     clientIp: 'String'
     id: 'Int'
+  }
+  Subscription: { // field return type name
+    requestCS: 'RequestCS'
   }
 }
 
@@ -160,6 +169,9 @@ export interface NexusGenArgTypes {
   Query: {
     getClients: { // args
       range: NexusGenInputs['RangePort']; // RangePort!
+    }
+    getRequestCS: { // args
+      ip: string; // String!
     }
   }
 }

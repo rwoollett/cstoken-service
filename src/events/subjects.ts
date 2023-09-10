@@ -1,4 +1,4 @@
 export enum Subjects {
-  ArticlePublished = 'article:published',
-  CommentCreated = 'comment:created',
+  RequestCSCreated = 'requestCS:created',
+  AcquireCSCreated = 'acquireCS:created'
 }

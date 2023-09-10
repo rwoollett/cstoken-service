@@ -11,7 +11,9 @@ import {
   getClientsResolver,
   createClientResolver,
   createRequestCSResolver,
-  createAcquireCSResolver
+  createAcquireCSResolver,
+  subcribeRequestCSResolver,
+  getRequestCSResolver
 } from '../resolvers/cstoken';
 //import { withFilter } from "graphql-subscriptions";
 //import { CommentCreatedEvent } from '../../events';
@@ -96,6 +98,13 @@ export const CSTokenQuery = extendType({
       },
       resolve: getClientsResolver
     });
+    t.field('getRequestCS', {
+      type: nonNull(list('RequestCS')),
+      args: {
+        ip: nonNull(stringArg())
+      },
+      resolve: getRequestCSResolver
+    });
   },
 });
 
@@ -131,32 +140,32 @@ export const CSTokenMutations = extendType({
   },
 })
 
-// export const Subscription = extendType({
-//   type: "Subscription",
-//   definition(t) {
-//     t.field('newComment', {
-//       type: 'blogComment',
-//       subscribe(_root, _args, ctx) {
-//         return ctx.pubsub.asyncIterator('newComment')
-//       },
-//       resolve: newCommentResolver
-//     });
-//     t.field('commentAdded', {
-//       type: 'blogComment',
-//       args: {
-//         articleSlug: nonNull(stringArg())
-//       },
-//       subscribe: withFilter(
-//         (_root, _args, ctx) => ctx.pubsub.asyncIterator('commentAdded'),
-//         (msg: CommentCreatedEvent, variables) => {
-//           return (
-//             msg.data.articleSlug === variables.articleSlug
-//           );
-//         }),
-//       resolve: newCommentResolver
-//     })
+export const Subscription = extendType({
+  type: "Subscription",
+  definition(t) {
+    t.field('requestCS', {
+      type: 'RequestCS',
+      subscribe(_root, _args, ctx) {
+        return ctx.pubsub.asyncIterator('requestCS')
+      },
+      resolve: subcribeRequestCSResolver
+    });
+    // t.field('commentAdded', {
+    //   type: 'blogComment',
+    //   args: {
+    //     articleSlug: nonNull(stringArg())
+    //   },
+    //   subscribe: withFilter(
+    //     (_root, _args, ctx) => ctx.pubsub.asyncIterator('commentAdded'),
+    //     (msg: CommentCreatedEvent, variables) => {
+    //       return (
+    //         msg.data.articleSlug === variables.articleSlug
+    //       );
+    //     }),
+    //   resolve: newCommentResolver
+    // })
 
-//   },
-// });
+  },
+});
 
 
