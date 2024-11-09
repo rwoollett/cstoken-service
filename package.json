@@ -1,7 +1,7 @@
 {
-  "name": "apollonextjs-stack",
+  "name": "cstoken-service",
   "version": "1.0.0",
-  "description": "Apollo Stack with NextJS front end. Apollo client/server with GraphQL Nexus schema. Prisma for the stack SQL database",
+  "description": "Apollo client/server with GraphQL Nexus schema. Prisma for the stack SQL database",
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --no-notify --respawn --transpile-only src/api/server.ts",
