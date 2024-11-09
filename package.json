@@ -21,7 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.7.14",
-    "@apollo/server": "^4.7.1",
+    "@apollo/server": "^4.11.2",
     "@prisma/client": "^4.14.0",
     "amqplib": "^0.10.3",
     "axios": "^1.4.0",
