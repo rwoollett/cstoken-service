@@ -14,7 +14,7 @@ import { rabbitWrapper } from '../lib/rabbitWrapper';
 import { prisma } from "../lib/prismaClient";
 import { ApolloClient, InMemoryCache } from "@apollo/client/core";
 import { SchemaLink } from "@apollo/client/link/schema";
-import { ArticlePublishedListener } from '../events/listeners/articlePublishedListener';
+//import { ArticlePublishedListener } from '../events/listeners/articlePublishedListener';
 import { AMQPPubSub } from 'graphql-amqp-subscriptions';
 
 const PORT = process.env.PORT || 4000
@@ -91,26 +91,26 @@ async function start() {
     console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`)
   })
 
-  let listenerArticlePublished: ArticlePublishedListener | null = null;
-  try {
-    const { schema } = require('../graphql/schema');
-    const apolloClient = new ApolloClient({
-      ssrMode: true,
-      link: new SchemaLink({
-        schema,
-        context: async () => ({ prisma })
-      }),
-      cache: new InMemoryCache()
-    });
+  // let listenerArticlePublished: ArticlePublishedListener | null = null;
+  // try {
+  //   const { schema } = require('../graphql/schema');
+  //   const apolloClient = new ApolloClient({
+  //     ssrMode: true,
+  //     link: new SchemaLink({
+  //       schema,
+  //       context: async () => ({ prisma })
+  //     }),
+  //     cache: new InMemoryCache()
+  //   });
 
-    // Start listener on rabbit to consume
-    //listenerArticlePublished = new ArticlePublishedListener(rabbitWrapper.client, apolloClient);
-    //listenerArticlePublished.listen();
+  //   // Start listener on rabbit to consume
+  //   //listenerArticlePublished = new ArticlePublishedListener(rabbitWrapper.client, apolloClient);
+  //   //listenerArticlePublished.listen();
 
 
-  } catch (error) {
-    console.error("Rabbit connect status:", error);
-  }
+  // } catch (error) {
+  //   console.error("Rabbit connect status:", error);
+  // }
 
   let closed: boolean[] = [false, false, false];
   process.on('SIGINT', async function () {
@@ -120,7 +120,7 @@ async function start() {
         closed[0] = true;
       })
       await server.stop();
-      listenerArticlePublished && !closed[1] && await listenerArticlePublished.close();
+      //listenerArticlePublished && !closed[1] && await listenerArticlePublished.close();
       closed[1] = true;
       await rabbitWrapper.disconnect();
     } catch (err) {

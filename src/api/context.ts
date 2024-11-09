@@ -3,7 +3,7 @@ import { AMQPPubSub } from 'graphql-amqp-subscriptions';
 
 export interface Context {
   prisma: PrismaClient;
-  pubsub: AMQPPubSub;
+  pubsub: AMQPPubSub|null;
 }
 
 export interface TestingContext {
