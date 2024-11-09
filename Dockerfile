@@ -1,14 +1,15 @@
 
-FROM node:18-alpine as base
+FROM node:22.11-alpine as base
 
 FROM base AS deps
-RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev nasm bash vips-dev
+RUN apk update
+# && apk add --no-cache bash vips-dev
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /app
 COPY ./package.json ./
-RUN npm install -g npm@9.7.1
+RUN npm install -g npm@10.9.0
 RUN npm config set fetch-retry-maxtimeout 600000 -g && npm install
 
 # FROM base AS builder
