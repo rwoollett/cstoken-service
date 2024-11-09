@@ -1,5 +1,5 @@
 
-FROM node:16-alpine as base
+FROM node:18-alpine as base
 
 FROM base AS deps
 RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev nasm bash vips-dev
@@ -23,7 +23,7 @@ RUN npm config set fetch-retry-maxtimeout 600000 -g && npm install
 FROM base AS runner
 WORKDIR /app
 
-ARG NODE_ENV=production
+ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
 #COPY --from=builder /app/dist ./dist
