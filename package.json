@@ -23,7 +23,6 @@
     "@babel/traverse": "^7.25.9",
     "@prisma/client": "^4.14.0",
     "amqplib": "^0.10.3",
-    "axios": "^1.4.0",
     "cors": "^2.8.5",
     "graphql": "^16.6.0",
     "graphql-amqp-subscriptions": "^2.0.0",
