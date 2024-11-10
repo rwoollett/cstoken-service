@@ -9,8 +9,7 @@
     "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only src/graphql/schema.ts",
-    "test": "npm run generate:nexus && jest",
-    "gqlgen": "graphql-codegen --config src/codegen.ts"
+    "test": "npm run generate:nexus && jest"
   },
   "keywords": [
     "apollo",
@@ -20,7 +19,6 @@
   "author": "Rodney Woollett <rodney.woollett@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@apollo/client": "^3.7.14",
     "@apollo/server": "^4.11.2",
     "@babel/traverse": "^7.25.9",
     "@prisma/client": "^4.14.0",
@@ -30,6 +28,7 @@
     "graphql": "^16.6.0",
     "graphql-amqp-subscriptions": "^2.0.0",
     "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.16.0",
     "lodash": "^4.17.21",
     "nexus": "^1.3.0",
     "ts-node": "^10.9.1",
