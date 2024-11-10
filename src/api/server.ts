@@ -34,24 +34,23 @@ async function start() {
     throw new Error('RABBIT_HOST must be defined');
   }
 
-  let context: Context = {
-    prisma: prisma,
-    pubsub: null
-  }
-
   try {
     await rabbitWrapper.connect(
       process.env.RABBIT_USER,
       process.env.RABBIT_PASS,
       process.env.RABBIT_HOST
     );
-    const pubsub = new AMQPPubSub({
-      connection: rabbitWrapper.client
-    });
-    context.pubsub = pubsub;
-
+  
   } catch (e) {
     console.log('RabbitMQ connect: ', e);
+    throw new Error('RabbitMQ must be connected');
+  }
+
+  const context: Context = {
+    prisma: prisma,
+    pubsub: new AMQPPubSub({
+      connection: rabbitWrapper.client
+    })
   }
 
   /** Create WS Server */
