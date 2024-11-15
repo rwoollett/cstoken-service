@@ -13,19 +13,17 @@ model Client {
   name          String
   connected     Boolean       @default(false)
   parentIp      String        @unique @db.VarChar(50)
+  AcquireCS     AcquireCS[]   @relation("acquire")
   RequestParent RequestParent @relation(fields: [parentIp], references: [clientIp])
-  RequestCS     RequestCS[]   @relation(name: "source")
-  AcquireCS     AcquireCS[]   @relation(name: "acquire")
+  RequestCS     RequestCS[]   @relation("source")
 }
 
 model RequestParent {
   id        Int         @id @default(autoincrement())
   clientIp  String      @unique @db.VarChar(50)
+  AcquireCS AcquireCS[] @relation("source")
   Client    Client?
-  RequestCS RequestCS[] @relation(name: "parent")
-  AcquireCS AcquireCS[] @relation(name: "source")
-
-  //  @@map("requestParent")
+  RequestCS RequestCS[] @relation("parent")
 }
 
 model RequestCS {
@@ -33,20 +31,16 @@ model RequestCS {
   requestedAt DateTime      @default(now())
   relayed     Boolean       @default(false)
   sourceIp    String
-  source      Client        @relation(name: "source", fields: [sourceIp], references: [ip])
   parentIp    String
-  parent      RequestParent @relation(name: "parent", fields: [parentIp], references: [clientIp])
-
-  //  @@map("requestCS")
+  parent      RequestParent @relation("parent", fields: [parentIp], references: [clientIp])
+  source      Client        @relation("source", fields: [sourceIp], references: [ip])
 }
 
 model AcquireCS {
   id         Int           @id @default(autoincrement())
   acquiredAt DateTime      @default(now())
   ip         String
-  client     Client        @relation(name: "acquire", fields: [ip], references: [ip])
   sourceIp   String
-  source     RequestParent @relation(name: "source", fields: [sourceIp], references: [clientIp])
-
-  //  @@map("acquireCS")
+  client     Client        @relation("acquire", fields: [ip], references: [ip])
+  source     RequestParent @relation("source", fields: [sourceIp], references: [clientIp])
 }

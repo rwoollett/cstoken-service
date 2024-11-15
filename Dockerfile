@@ -1,5 +1,5 @@
 
-FROM node:22.11-alpine as base
+FROM node:20.18-alpine as base
 
 FROM base AS deps
 RUN apk update
@@ -9,7 +9,7 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /app
 COPY ./package.json ./
-RUN npm install -g npm@10.9.0
+RUN npm install -g npm@10.8.2
 RUN npm config set fetch-retry-maxtimeout 600000 -g && npm install
 
 # FROM base AS builder

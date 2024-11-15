@@ -54,7 +54,7 @@ function graphqlTestContext({ portRange: { from, to }}:TestContentArgs) {
       serverInstance = new ApolloServer<TestingContext>({
         schema,
       });
-
+console.log(process.env.DATABASE_TEST_URL);
       prisma = new PrismaClient({
         datasources: {
           db: {
