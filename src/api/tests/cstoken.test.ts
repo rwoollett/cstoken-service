@@ -9,28 +9,28 @@ it('returns list of clients', async () => {
 
   await ctx.prisma.requestParent.create({
     data: {
-      clientIp: "5010",
+      clientIp: "5510",
     }
   });
   await ctx.prisma.requestParent.create({
     data: {
-      clientIp: "5020",
+      clientIp: "5520",
     }
   });
   await ctx.prisma.client.create({
     data: {
-      ip: "5020",
+      ip: "5520",
       name: "Lemon",
       connected: false,
-      parentIp: "5020"
+      parentIp: "5520"
     }
   });
   await ctx.prisma.client.create({
     data: {
-      ip: "5010",
+      ip: "5510",
       name: "Pear",
       connected: false,
-      parentIp: "5010"
+      parentIp: "5510"
     }
   });
 
@@ -45,25 +45,25 @@ it('returns list of clients', async () => {
     }
   }  `, {
     range: {
-      from: 5010,
-      to: 5020
+      from: 5510,
+      to: 5520
     }
   });
 
   expect(getClients.getClients).toMatchInlineSnapshot(`
 [
   {
-    "ip": "5010",
+    "ip": "5510",
     "name": "Pear",
     "requestParent": {
-      "clientIp": "5010",
+      "clientIp": "5510",
     },
   },
   {
-    "ip": "5020",
+    "ip": "5520",
     "name": "Lemon",
     "requestParent": {
-      "clientIp": "5020",
+      "clientIp": "5520",
     },
   },
 ]
@@ -75,27 +75,27 @@ it('ensures that a token request is created for a client', async () => {
 
   await ctx.prisma.requestParent.create({
     data: {
-      clientIp: "5010",
+      clientIp: "5510",
     }
   });
   await ctx.prisma.requestParent.create({
     data: {
-      clientIp: "5020",
+      clientIp: "5520",
     }
   });
   await ctx.prisma.client.create({
     data: {
-      ip: "5020",
+      ip: "5520",
       name: "Lemon",
       connected: false,
-      parentIp: "5020"
+      parentIp: "5520"
     }
   });
 
   // Create a new client token request record for enter CS
   const createRequestCS: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
     mutation {
-      createRequestCS(sourceIp: "5020", parentIp: "5010", relayed: false) {  
+      createRequestCS(sourceIp: "5520", parentIp: "5510", relayed: false) {  
         id
         relayed
         requestedAt
@@ -109,7 +109,7 @@ it('ensures that a token request is created for a client', async () => {
   // owning token. So relay message for originator.
   const createRelayRequestToNewParnetSourceCS: NexusGenFieldTypes["Mutation"] = await ctx.client.request(`
     mutation {
-      createRequestCS(sourceIp: "5020", parentIp: "5010", relayed: true) {  
+      createRequestCS(sourceIp: "5520", parentIp: "5510", relayed: true) {  
         id
         relayed
         requestedAt
@@ -135,8 +135,8 @@ it('ensures that a token request is created for a client', async () => {
 
 
   // Should have article in db before saving
-  expect(createRequestCS.createRequestCS.parentIp).toMatchInlineSnapshot(`"5010"`);
-  expect(createRequestCS.createRequestCS.sourceIp).toMatchInlineSnapshot(`"5020"`);
+  expect(createRequestCS.createRequestCS.parentIp).toMatchInlineSnapshot(`"5510"`);
+  expect(createRequestCS.createRequestCS.sourceIp).toMatchInlineSnapshot(`"5520"`);
 
   const persistedData = await ctx.prisma.requestCS.findMany();
   expect(persistedData.length).toMatchInlineSnapshot(`2`);
