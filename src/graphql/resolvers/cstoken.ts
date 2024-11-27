@@ -1,6 +1,10 @@
 import { eq } from "lodash";
 import { FieldResolver } from "nexus";
-import { RequestCSCreatedEvent, Subjects } from "../../events";
+import {
+  ClientCSConnectedEvent,
+  RequestCSCreatedEvent,
+  Subjects
+} from "../../events";
 
 export const getClientsResolver: FieldResolver<
   "Query",
@@ -107,7 +111,7 @@ export const createRequestCSResolver: FieldResolver<
     }
   });
 
-  pubsub && pubsub.publish('requestCS',
+  pubsub && pubsub.publish(Subjects.RequestCSCreated,
     {
       subject: Subjects.RequestCSCreated,
       data: {
@@ -123,6 +127,21 @@ export const createRequestCSResolver: FieldResolver<
     sourceIp: newRequestCS.sourceIp,
     parentIp: newRequestCS.parentIp
   }
+};
+
+export const connectClientCSResolver: FieldResolver<
+  "Mutation", "connectClientCS"
+> = async (_, { sourceIp }, { pubsub }) => {
+
+  const connectedAt = new Date().toISOString();
+
+  pubsub && pubsub.publish(Subjects.ClientCSConnected,
+    {
+      subject: Subjects.ClientCSConnected,
+      data: { sourceIp, connectedAt }
+    } as ClientCSConnectedEvent);
+
+  return { sourceIp, connectedAt } 
 };
 
 export const createAcquireCSResolver: FieldResolver<
@@ -161,4 +180,9 @@ export const subcribeRequestCSResolver = (payload: RequestCSCreatedEvent) => {
     requestedAt: requestCS.requestedAt,
     relayed: requestCS.relayed
   };
+};
+
+export const subcribeConnectedCSResolver = (payload: ClientCSConnectedEvent) => {
+  const { sourceIp, connectedAt } = payload.data;
+  return { sourceIp, connectedAt };
 };

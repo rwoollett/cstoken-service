@@ -1,4 +1,5 @@
 export enum Subjects {
-  RequestCSCreated = 'requestCS:created',
-  AcquireCSCreated = 'acquireCS:created'
+  ClientCSConnected = 'clientCS_Connected',
+  RequestCSCreated = 'requestCS_Created',
+  AcquireCSCreated = 'acquireCS_Created'
 }

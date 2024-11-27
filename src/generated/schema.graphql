@@ -23,7 +23,14 @@ type Client {
   requestParent: RequestParent!
 }
 
+"""Connected client to an ip on network CS"""
+type ConnectedClient {
+  connectedAt: String!
+  sourceIp: String!
+}
+
 type Mutation {
+  connectClientCS(sourceIp: String!): ConnectedClient!
   createAcquireCS(ip: String!, sourceIp: String!): AcquireCS!
   createClient(connected: Boolean!, ip: String!, name: String!): Client!
   createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): RequestCS!
@@ -60,5 +67,6 @@ type RequestParent {
 }
 
 type Subscription {
-  requestCS: RequestCS
+  clientCS_Connected: ConnectedClient
+  requestCS_Created: RequestCS
 }

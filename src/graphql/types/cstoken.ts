@@ -13,8 +13,13 @@ import {
   createRequestCSResolver,
   createAcquireCSResolver,
   subcribeRequestCSResolver,
-  getRequestCSResolver
+  getRequestCSResolver,
+  subcribeConnectedCSResolver,
+  connectClientCSResolver
 } from '../resolvers/cstoken';
+import {
+  Subjects
+} from "../../events";
 //import { withFilter } from "graphql-subscriptions";
 //import { CommentCreatedEvent } from '../../events';
 
@@ -48,6 +53,14 @@ export const Client = objectType({
   description: "Clients to request and acquire the single token for CS"
 });
 
+export const ConnectedClient = objectType({
+  name: 'ConnectedClient',
+  definition(t) {
+    t.nonNull.string('sourceIp'),
+    t.nonNull.string('connectedAt')
+  },
+  description: "Connected client to an ip on network CS"
+})
 
 /**
  * RequestCS
@@ -137,19 +150,34 @@ export const CSTokenMutations = extendType({
       },
       resolve: createAcquireCSResolver
     });
+    t.nonNull.field('connectClientCS', {
+      type: 'ConnectedClient',
+      args: {
+        sourceIp: nonNull(stringArg())
+      },
+      resolve: connectClientCSResolver
+    });
   },
 })
 
 export const Subscription = extendType({
   type: "Subscription",
   definition(t) {
-    t.field('requestCS', {
+    t.field(Subjects.RequestCSCreated, {
       type: 'RequestCS',
       subscribe(_root, _args, ctx) {
         
-        return ctx.pubsub.asyncIterator('requestCS')
+        return ctx.pubsub.asyncIterator(Subjects.RequestCSCreated)
       },
       resolve: subcribeRequestCSResolver
+    });
+    t.field(Subjects.ClientCSConnected, {
+      type: 'ConnectedClient',
+      subscribe(_root, _args, ctx) {
+        
+        return ctx.pubsub.asyncIterator(Subjects.ClientCSConnected)
+      },
+      resolve: subcribeConnectedCSResolver
     });
     // t.field('commentAdded', {
     //   type: 'blogComment',

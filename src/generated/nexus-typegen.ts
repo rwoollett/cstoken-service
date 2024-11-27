@@ -45,6 +45,10 @@ export interface NexusGenObjects {
     name: string; // String!
     requestParent: NexusGenRootTypes['RequestParent']; // RequestParent!
   }
+  ConnectedClient: { // root type
+    connectedAt: string; // String!
+    sourceIp: string; // String!
+  }
   Mutation: {};
   Query: {};
   RequestCS: { // root type
@@ -85,7 +89,12 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     requestParent: NexusGenRootTypes['RequestParent']; // RequestParent!
   }
+  ConnectedClient: { // field return type
+    connectedAt: string; // String!
+    sourceIp: string; // String!
+  }
   Mutation: { // field return type
+    connectClientCS: NexusGenRootTypes['ConnectedClient']; // ConnectedClient!
     createAcquireCS: NexusGenRootTypes['AcquireCS']; // AcquireCS!
     createClient: NexusGenRootTypes['Client']; // Client!
     createRequestCS: NexusGenRootTypes['RequestCS']; // RequestCS!
@@ -106,7 +115,8 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
   }
   Subscription: { // field return type
-    requestCS: NexusGenRootTypes['RequestCS'] | null; // RequestCS
+    clientCS_Connected: NexusGenRootTypes['ConnectedClient'] | null; // ConnectedClient
+    requestCS_Created: NexusGenRootTypes['RequestCS'] | null; // RequestCS
   }
 }
 
@@ -124,7 +134,12 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
     requestParent: 'RequestParent'
   }
+  ConnectedClient: { // field return type name
+    connectedAt: 'String'
+    sourceIp: 'String'
+  }
   Mutation: { // field return type name
+    connectClientCS: 'ConnectedClient'
     createAcquireCS: 'AcquireCS'
     createClient: 'Client'
     createRequestCS: 'RequestCS'
@@ -145,12 +160,16 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
   }
   Subscription: { // field return type name
-    requestCS: 'RequestCS'
+    clientCS_Connected: 'ConnectedClient'
+    requestCS_Created: 'RequestCS'
   }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
+    connectClientCS: { // args
+      sourceIp: string; // String!
+    }
     createAcquireCS: { // args
       ip: string; // String!
       sourceIp: string; // String!
