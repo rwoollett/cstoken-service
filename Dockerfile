@@ -4,7 +4,7 @@ FROM node:20.18-alpine as base
 FROM base AS deps
 RUN apk update
 # && apk add --no-cache bash vips-dev
-ARG NODE_ENV=production
+ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /app
@@ -35,5 +35,5 @@ RUN npm run generate
 #RUN npm run gqlgen
 
 EXPOSE 3002
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
 

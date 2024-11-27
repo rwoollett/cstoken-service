@@ -1,9 +1,16 @@
 
-version: '3'
 services:
   cstoken:
     container_name: cstoken
     image: cstoken-dev:v1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - path: src/
+          action: sync
+          target: /app/src
     restart: unless-stopped
     env_file: .env
     environment:
