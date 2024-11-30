@@ -64,6 +64,7 @@ type RequestParent {
 }
 
 type Subscription {
-  clientCS_Connected: ConnectedClient
+  acquireCS_Created: AcquireCS
+  clientCS_Connected(sourceIp: String!): ConnectedClient
   requestCS_Created: RequestCS
 }

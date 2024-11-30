@@ -76,9 +76,20 @@ export const createClientResolver: FieldResolver<
 
 export const connectClientCSResolver: FieldResolver<
   "Mutation", "connectClientCS"
-> = async (_, { sourceIp }, { pubsub }) => {
+> = async (_, { sourceIp }, { prisma, pubsub }) => {
 
   const connectedAt = new Date().toISOString();
+  await prisma.client.update({
+    where: {
+      ip: sourceIp
+    },
+    data: {
+      ip: sourceIp,
+      connected: true,
+      connectedAt: connectedAt
+    }
+  });
+
 
   pubsub && pubsub.publish(Subjects.ClientCSConnected,
     {

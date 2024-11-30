@@ -12,6 +12,7 @@ model Client {
   ip            String        @unique @db.VarChar(50)
   name          String
   connected     Boolean       @default(false)
+  connectedAt   DateTime      @default(now())
   parentIp      String        @unique @db.VarChar(50)
   //AcquireCS     AcquireCS[]   @relation("acquire")
   RequestParent RequestParent @relation(fields: [parentIp], references: [clientIp])

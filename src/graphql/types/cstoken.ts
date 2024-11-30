@@ -18,8 +18,10 @@ import {
   subcribeAcquireCSResolver
 } from '../resolvers/cstoken';
 import {
+  ClientCSConnectedEvent,
   Subjects
 } from "../../events";
+import { withFilter } from 'graphql-subscriptions';
 //import { withFilter } from "graphql-subscriptions";
 //import { CommentCreatedEvent } from '../../events';
 
@@ -159,9 +161,16 @@ export const Subscription = extendType({
   definition(t) {
     t.field(Subjects.ClientCSConnected, {
       type: 'ConnectedClient',
-      subscribe(_root, _args, ctx) {
-        return ctx.pubsub.asyncIterator(Subjects.ClientCSConnected)
+      args: {
+        sourceIp: nonNull(stringArg())
       },
+      subscribe: withFilter(
+        (_root, _args, ctx) => ctx.pubsub.asyncIterator(Subjects.ClientCSConnected),
+        (clientConnect: ClientCSConnectedEvent, variables) => {
+          return (
+            clientConnect.data.sourceIp === variables.sourceIp
+          );
+        }),
       resolve: subcribeConnectedCSResolver
     });
     t.field(Subjects.RequestCSCreated, {

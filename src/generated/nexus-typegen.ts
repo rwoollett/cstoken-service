@@ -110,6 +110,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
   }
   Subscription: { // field return type
+    acquireCS_Created: NexusGenRootTypes['AcquireCS'] | null; // AcquireCS
     clientCS_Connected: NexusGenRootTypes['ConnectedClient'] | null; // ConnectedClient
     requestCS_Created: NexusGenRootTypes['RequestCS'] | null; // RequestCS
   }
@@ -152,6 +153,7 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
   }
   Subscription: { // field return type name
+    acquireCS_Created: 'AcquireCS'
     clientCS_Connected: 'ConnectedClient'
     requestCS_Created: 'RequestCS'
   }
@@ -180,6 +182,11 @@ export interface NexusGenArgTypes {
   Query: {
     getClients: { // args
       range: NexusGenInputs['RangePort']; // RangePort!
+    }
+  }
+  Subscription: {
+    clientCS_Connected: { // args
+      sourceIp: string; // String!
     }
   }
 }
