@@ -109,7 +109,7 @@ export const createAcquireCSResolver: FieldResolver<
 > = async (_, { ip, sourceIp }, { pubsub }) => {
   const acquiredAt = new Date().toISOString();
 
-  pubsub && pubsub.publish(Subjects.RequestCSCreated,
+  pubsub && pubsub.publish(Subjects.AcquireCSCreated,
     {
       subject: Subjects.AcquireCSCreated,
       data: { ip, sourceIp, acquiredAt }
