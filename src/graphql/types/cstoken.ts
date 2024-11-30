@@ -14,7 +14,8 @@ import {
   createAcquireCSResolver,
   subcribeRequestCSResolver,
   subcribeConnectedCSResolver,
-  connectClientCSResolver
+  connectClientCSResolver,
+  subcribeAcquireCSResolver
 } from '../resolvers/cstoken';
 import {
   Subjects
@@ -169,6 +170,13 @@ export const Subscription = extendType({
         return ctx.pubsub.asyncIterator(Subjects.RequestCSCreated)
       },
       resolve: subcribeRequestCSResolver
+    });
+    t.field(Subjects.AcquireCSCreated, {
+      type: 'AcquireCS',
+      subscribe(_root, _args, ctx) {
+        return ctx.pubsub.asyncIterator(Subjects.AcquireCSCreated)
+      },
+      resolve: subcribeAcquireCSResolver
     });
 
   },
