@@ -1,6 +1,7 @@
 import { eq } from "lodash";
 import { FieldResolver } from "nexus";
 import {
+  AcquireCSCreatedEvent,
   ClientCSConnectedEvent,
   RequestCSCreatedEvent,
   Subjects
@@ -32,33 +33,6 @@ export const getClientsResolver: FieldResolver<
         id: client.RequestParent.id,
         clientIp: client.RequestParent.clientIp
       }
-    }
-  ));
-};
-
-export const getRequestCSResolver: FieldResolver<
-  "Query",
-  "getRequestCS"
-> = async (_, { ip }, { prisma, pubsub }) => {
-  const requests = await prisma.requestCS.findMany({
-    select: {
-      id: true,
-      sourceIp: true,
-      parentIp: true,
-      requestedAt: true,
-      relayed: true
-    },
-    where: {
-      sourceIp: {
-        equals: ip
-      }
-    }
-  });
-
-  return [...requests].map((requestCS) => (
-    {
-      ...requestCS,
-      requestedAt: requestCS.requestedAt.toISOString()
     }
   ));
 };
@@ -100,35 +74,6 @@ export const createClientResolver: FieldResolver<
   }
 };
 
-export const createRequestCSResolver: FieldResolver<
-  "Mutation", "createRequestCS"
-> = async (_, { sourceIp, parentIp, relayed }, { prisma, pubsub }) => {
-  const newRequestCS = await prisma.requestCS.create({
-    data: {
-      sourceIp,
-      parentIp,
-      relayed
-    }
-  });
-
-  pubsub && pubsub.publish(Subjects.RequestCSCreated,
-    {
-      subject: Subjects.RequestCSCreated,
-      data: {
-        ...newRequestCS,
-        requestedAt: newRequestCS.requestedAt.toISOString()
-      }
-    } as RequestCSCreatedEvent);
-
-  return {
-    id: newRequestCS.id,
-    requestedAt: newRequestCS.requestedAt.toISOString(),
-    relayed,
-    sourceIp: newRequestCS.sourceIp,
-    parentIp: newRequestCS.parentIp
-  }
-};
-
 export const connectClientCSResolver: FieldResolver<
   "Mutation", "connectClientCS"
 > = async (_, { sourceIp }, { pubsub }) => {
@@ -141,40 +86,46 @@ export const connectClientCSResolver: FieldResolver<
       data: { sourceIp, connectedAt }
     } as ClientCSConnectedEvent);
 
-  return { sourceIp, connectedAt } 
+  return { sourceIp, connectedAt }
 };
+
+export const createRequestCSResolver: FieldResolver<
+  "Mutation", "createRequestCS"
+> = async (_, { sourceIp, parentIp, relayed }, { pubsub }) => {
+  const requestedAt = new Date().toISOString();
+
+  pubsub && pubsub.publish(Subjects.RequestCSCreated,
+    {
+      subject: Subjects.RequestCSCreated,
+      data: { sourceIp, parentIp, requestedAt, relayed }
+    } as RequestCSCreatedEvent);
+
+  return { sourceIp, parentIp, requestedAt, relayed }
+};
+
 
 export const createAcquireCSResolver: FieldResolver<
   "Mutation", "createAcquireCS"
-> = async (_, { ip, sourceIp }, { prisma, pubsub }) => {
-  const newAcquireCS = await prisma.acquireCS.create({
-    data: {
-      ip,
-      sourceIp,
-    }
-  });
+> = async (_, { ip, sourceIp }, { pubsub }) => {
+  const acquiredAt = new Date().toISOString();
 
-  // pubsub && pubsub.publish('commentAdded',
-  //   {
-  //     subject: Subjects.CommentCreated,
-  //     data: {
-  //       ...newComment,
-  //       publishedAt: newComment.publishedAt.toISOString()
-  //     }
-  //   } as CommentCreatedEvent);
+  pubsub && pubsub.publish(Subjects.RequestCSCreated,
+    {
+      subject: Subjects.AcquireCSCreated,
+      data: { ip, sourceIp, acquiredAt }
+    } as AcquireCSCreatedEvent);
 
-  return {
-    id: newAcquireCS.id,
-    ip: newAcquireCS.ip,
-    sourceIp: newAcquireCS.sourceIp,
-    acquiredAt: newAcquireCS.acquiredAt.toISOString()
-  }
+  return { ip, sourceIp, acquiredAt }
+};
+
+export const subcribeConnectedCSResolver = (payload: ClientCSConnectedEvent) => {
+  const { sourceIp, connectedAt } = payload.data;
+  return { sourceIp, connectedAt };
 };
 
 export const subcribeRequestCSResolver = (payload: RequestCSCreatedEvent) => {
   const { data: requestCS } = payload;
   return {
-    id: requestCS.id,
     sourceIp: requestCS.sourceIp,
     parentIp: requestCS.parentIp,
     requestedAt: requestCS.requestedAt,
@@ -182,7 +133,12 @@ export const subcribeRequestCSResolver = (payload: RequestCSCreatedEvent) => {
   };
 };
 
-export const subcribeConnectedCSResolver = (payload: ClientCSConnectedEvent) => {
-  const { sourceIp, connectedAt } = payload.data;
-  return { sourceIp, connectedAt };
+export const subcribeAcquireCSResolver = (payload: AcquireCSCreatedEvent) => {
+  const { data: acquireCS } = payload;
+  return {
+    ip: acquireCS.ip,
+    sourceIp: acquireCS.sourceIp,
+    acquiredAt: acquireCS.acquiredAt
+  };
 };
+

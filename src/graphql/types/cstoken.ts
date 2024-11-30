@@ -13,7 +13,6 @@ import {
   createRequestCSResolver,
   createAcquireCSResolver,
   subcribeRequestCSResolver,
-  getRequestCSResolver,
   subcribeConnectedCSResolver,
   connectClientCSResolver
 } from '../resolvers/cstoken';
@@ -53,11 +52,14 @@ export const Client = objectType({
   description: "Clients to request and acquire the single token for CS"
 });
 
+/**
+ * ConnectedClient
+ */
 export const ConnectedClient = objectType({
   name: 'ConnectedClient',
   definition(t) {
     t.nonNull.string('sourceIp'),
-    t.nonNull.string('connectedAt')
+      t.nonNull.string('connectedAt')
   },
   description: "Connected client to an ip on network CS"
 })
@@ -68,7 +70,6 @@ export const ConnectedClient = objectType({
 export const RequestCS = objectType({
   name: 'RequestCS',
   definition(t) {
-    t.nonNull.int('id')
     t.nonNull.string('requestedAt')
     t.nonNull.boolean('relayed')
     t.nonNull.string('sourceIp')
@@ -83,7 +84,6 @@ export const RequestCS = objectType({
 export const AcquireCS = objectType({
   name: 'AcquireCS',
   definition(t) {
-    t.nonNull.int('id')
     t.nonNull.string('ip')
     t.nonNull.string('sourceIp')
     t.nonNull.string('acquiredAt')
@@ -111,13 +111,6 @@ export const CSTokenQuery = extendType({
       },
       resolve: getClientsResolver
     });
-    t.field('getRequestCS', {
-      type: nonNull(list('RequestCS')),
-      args: {
-        ip: nonNull(stringArg())
-      },
-      resolve: getRequestCSResolver
-    });
   },
 });
 
@@ -132,6 +125,13 @@ export const CSTokenMutations = extendType({
         connected: nonNull(booleanArg())
       },
       resolve: createClientResolver
+    });
+    t.nonNull.field('connectClientCS', {
+      type: 'ConnectedClient',
+      args: {
+        sourceIp: nonNull(stringArg())
+      },
+      resolve: connectClientCSResolver
     });
     t.nonNull.field('createRequestCS', {
       type: 'RequestCS',
@@ -150,49 +150,26 @@ export const CSTokenMutations = extendType({
       },
       resolve: createAcquireCSResolver
     });
-    t.nonNull.field('connectClientCS', {
-      type: 'ConnectedClient',
-      args: {
-        sourceIp: nonNull(stringArg())
-      },
-      resolve: connectClientCSResolver
-    });
   },
 })
 
 export const Subscription = extendType({
   type: "Subscription",
   definition(t) {
-    t.field(Subjects.RequestCSCreated, {
-      type: 'RequestCS',
-      subscribe(_root, _args, ctx) {
-        
-        return ctx.pubsub.asyncIterator(Subjects.RequestCSCreated)
-      },
-      resolve: subcribeRequestCSResolver
-    });
     t.field(Subjects.ClientCSConnected, {
       type: 'ConnectedClient',
       subscribe(_root, _args, ctx) {
-        
         return ctx.pubsub.asyncIterator(Subjects.ClientCSConnected)
       },
       resolve: subcribeConnectedCSResolver
     });
-    // t.field('commentAdded', {
-    //   type: 'blogComment',
-    //   args: {
-    //     articleSlug: nonNull(stringArg())
-    //   },
-    //   subscribe: withFilter(
-    //     (_root, _args, ctx) => ctx.pubsub.asyncIterator('commentAdded'),
-    //     (msg: CommentCreatedEvent, variables) => {
-    //       return (
-    //         msg.data.articleSlug === variables.articleSlug
-    //       );
-    //     }),
-    //   resolve: newCommentResolver
-    // })
+    t.field(Subjects.RequestCSCreated, {
+      type: 'RequestCS',
+      subscribe(_root, _args, ctx) {
+        return ctx.pubsub.asyncIterator(Subjects.RequestCSCreated)
+      },
+      resolve: subcribeRequestCSResolver
+    });
 
   },
 });

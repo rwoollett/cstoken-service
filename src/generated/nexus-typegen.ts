@@ -34,7 +34,6 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   AcquireCS: { // root type
     acquiredAt: string; // String!
-    id: number; // Int!
     ip: string; // String!
     sourceIp: string; // String!
   }
@@ -52,7 +51,6 @@ export interface NexusGenObjects {
   Mutation: {};
   Query: {};
   RequestCS: { // root type
-    id: number; // Int!
     parentIp: string; // String!
     relayed: boolean; // Boolean!
     requestedAt: string; // String!
@@ -78,7 +76,6 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   AcquireCS: { // field return type
     acquiredAt: string; // String!
-    id: number; // Int!
     ip: string; // String!
     sourceIp: string; // String!
   }
@@ -101,10 +98,8 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getClients: Array<NexusGenRootTypes['Client'] | null>; // [Client]!
-    getRequestCS: Array<NexusGenRootTypes['RequestCS'] | null>; // [RequestCS]!
   }
   RequestCS: { // field return type
-    id: number; // Int!
     parentIp: string; // String!
     relayed: boolean; // Boolean!
     requestedAt: string; // String!
@@ -123,7 +118,6 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   AcquireCS: { // field return type name
     acquiredAt: 'String'
-    id: 'Int'
     ip: 'String'
     sourceIp: 'String'
   }
@@ -146,10 +140,8 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getClients: 'Client'
-    getRequestCS: 'RequestCS'
   }
   RequestCS: { // field return type name
-    id: 'Int'
     parentIp: 'String'
     relayed: 'Boolean'
     requestedAt: 'String'
@@ -188,9 +180,6 @@ export interface NexusGenArgTypes {
   Query: {
     getClients: { // args
       range: NexusGenInputs['RangePort']; // RangePort!
-    }
-    getRequestCS: { // args
-      ip: string; // String!
     }
   }
 }

@@ -5,7 +5,6 @@
 """A client ip takes ownership of CS token from the sourceIp"""
 type AcquireCS {
   acquiredAt: String!
-  id: Int!
   ip: String!
   sourceIp: String!
 }
@@ -38,7 +37,6 @@ type Mutation {
 
 type Query {
   getClients(range: RangePort!): [Client]!
-  getRequestCS(ip: String!): [RequestCS]!
 }
 
 """
@@ -53,7 +51,6 @@ input RangePort {
 A request for CS from a client source ip to its currently known parent ip in the distributed tree
 """
 type RequestCS {
-  id: Int!
   parentIp: String!
   relayed: Boolean!
   requestedAt: String!

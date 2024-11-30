@@ -13,34 +13,34 @@ model Client {
   name          String
   connected     Boolean       @default(false)
   parentIp      String        @unique @db.VarChar(50)
-  AcquireCS     AcquireCS[]   @relation("acquire")
+  //AcquireCS     AcquireCS[]   @relation("acquire")
   RequestParent RequestParent @relation(fields: [parentIp], references: [clientIp])
-  RequestCS     RequestCS[]   @relation("source")
+  //RequestCS     RequestCS[]   @relation("source")
 }
 
 model RequestParent {
   id        Int         @id @default(autoincrement())
   clientIp  String      @unique @db.VarChar(50)
-  AcquireCS AcquireCS[] @relation("source")
+  //AcquireCS AcquireCS[] @relation("source")
   Client    Client?
-  RequestCS RequestCS[] @relation("parent")
+  //RequestCS RequestCS[] @relation("parent")
 }
 
-model RequestCS {
-  id          Int           @id @default(autoincrement())
-  requestedAt DateTime      @default(now())
-  relayed     Boolean       @default(false)
-  sourceIp    String
-  parentIp    String
-  parent      RequestParent @relation("parent", fields: [parentIp], references: [clientIp])
-  source      Client        @relation("source", fields: [sourceIp], references: [ip])
-}
+// model RequestCS {
+//   id          Int           @id @default(autoincrement())
+//   requestedAt DateTime      @default(now())
+//   relayed     Boolean       @default(false)
+//   sourceIp    String
+//   parentIp    String
+//   parent      RequestParent @relation("parent", fields: [parentIp], references: [clientIp])
+//   source      Client        @relation("source", fields: [sourceIp], references: [ip])
+// }
 
-model AcquireCS {
-  id         Int           @id @default(autoincrement())
-  acquiredAt DateTime      @default(now())
-  ip         String
-  sourceIp   String
-  client     Client        @relation("acquire", fields: [ip], references: [ip])
-  source     RequestParent @relation("source", fields: [sourceIp], references: [clientIp])
-}
+// model AcquireCS {
+//   id         Int           @id @default(autoincrement())
+//   acquiredAt DateTime      @default(now())
+//   ip         String
+//   sourceIp   String
+//   client     Client        @relation("acquire", fields: [ip], references: [ip])
+//   source     RequestParent @relation("source", fields: [sourceIp], references: [clientIp])
+// }
