@@ -8,22 +8,23 @@ datasource db {
 }
 
 model Client {
-  id            Int           @id @default(autoincrement())
-  ip            String        @unique @db.VarChar(50)
-  name          String
-  connected     Boolean       @default(false)
-  connectedAt   DateTime      @default(now())
-  parentIp      String        @unique @db.VarChar(50)
+  id             Int           @id @default(autoincrement())
+  ip             String        @unique @db.VarChar(50)
+  name           String
+  connected      Boolean       @default(false)
+  connectedAt    DateTime?      //@default(now())
+  disconnectedAt DateTime?      //@default(now())
+  parentIp       String        @unique @db.VarChar(50)
   //AcquireCS     AcquireCS[]   @relation("acquire")
-  RequestParent RequestParent @relation(fields: [parentIp], references: [clientIp])
+  RequestParent  RequestParent @relation(fields: [parentIp], references: [clientIp])
   //RequestCS     RequestCS[]   @relation("source")
 }
 
 model RequestParent {
-  id        Int         @id @default(autoincrement())
-  clientIp  String      @unique @db.VarChar(50)
+  id       Int     @id @default(autoincrement())
+  clientIp String  @unique @db.VarChar(50)
   //AcquireCS AcquireCS[] @relation("source")
-  Client    Client?
+  Client   Client?
   //RequestCS RequestCS[] @relation("parent")
 }
 

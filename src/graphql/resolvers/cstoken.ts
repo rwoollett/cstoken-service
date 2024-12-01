@@ -3,6 +3,7 @@ import { FieldResolver } from "nexus";
 import {
   AcquireCSCreatedEvent,
   ClientCSConnectedEvent,
+  ClientCSDisconnectedEvent,
   RequestCSCreatedEvent,
   Subjects
 } from "../../events";
@@ -18,6 +19,7 @@ export const getClientsResolver: FieldResolver<
       name: true,
       connected: true,
       connectedAt: true,
+      disconnectedAt: true,
       RequestParent: true,
     },
     where: {
@@ -27,12 +29,12 @@ export const getClientsResolver: FieldResolver<
       }
     }
   });
-
   return [...clients].map((client) => (
     {
-      ...client, 
-        connectedAt: client.connectedAt.toISOString(),
-        requestParent: {
+      ...client,
+      connectedAt: client.connectedAt ? client.connectedAt.toISOString() : "",
+      disconnectedAt: client.disconnectedAt ? client.disconnectedAt.toISOString() : "",
+      requestParent: {
         id: client.RequestParent.id,
         clientIp: client.RequestParent.clientIp
       }
@@ -70,7 +72,8 @@ export const createClientResolver: FieldResolver<
     ip,
     name,
     connected,
-    connectedAt: newClient.connectedAt.toISOString(),
+    connectedAt: newClient.connectedAt ? newClient.connectedAt.toISOString() : "",
+    disconnectedAt: newClient.disconnectedAt ? newClient.disconnectedAt.toISOString() : "",
     requestParent: {
       id: parentRecord.id,
       clientIp: parentRecord.clientIp
@@ -102,6 +105,32 @@ export const connectClientCSResolver: FieldResolver<
     } as ClientCSConnectedEvent);
 
   return { sourceIp, connectedAt }
+};
+
+export const disconnectClientCSResolver: FieldResolver<
+  "Mutation", "disconnectClientCS"
+> = async (_, { sourceIp }, { prisma, pubsub }) => {
+
+  const disconnectedAt = new Date().toISOString();
+  await prisma.client.update({
+    where: {
+      ip: sourceIp
+    },
+    data: {
+      ip: sourceIp,
+      connected: true,
+      disconnectedAt: disconnectedAt
+    }
+  });
+
+
+  pubsub && pubsub.publish(Subjects.ClientCSDisconnected,
+    {
+      subject: Subjects.ClientCSDisconnected,
+      data: { sourceIp, disconnectedAt }
+    } as ClientCSDisconnectedEvent);
+
+  return { sourceIp, disconnectedAt }
 };
 
 export const createRequestCSResolver: FieldResolver<
@@ -136,6 +165,11 @@ export const createAcquireCSResolver: FieldResolver<
 export const subcribeConnectedCSResolver = (payload: ClientCSConnectedEvent) => {
   const { sourceIp, connectedAt } = payload.data;
   return { sourceIp, connectedAt };
+};
+
+export const subcribeDisconnectedCSResolver = (payload: ClientCSDisconnectedEvent) => {
+  const { sourceIp, disconnectedAt } = payload.data;
+  return { sourceIp, disconnectedAt };
 };
 
 export const subcribeRequestCSResolver = (payload: RequestCSCreatedEvent) => {

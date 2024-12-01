@@ -13,6 +13,7 @@ type AcquireCS {
 type Client {
   connected: Boolean!
   connectedAt: String!
+  disconnectedAt: String!
   id: Int!
   ip: String!
   name: String!
@@ -29,11 +30,18 @@ type ConnectedClient {
   sourceIp: String!
 }
 
+"""Disconnected client from an ip on network CS"""
+type DisconnectedClient {
+  disconnectedAt: String!
+  sourceIp: String!
+}
+
 type Mutation {
   connectClientCS(sourceIp: String!): ConnectedClient!
   createAcquireCS(ip: String!, sourceIp: String!): AcquireCS!
   createClient(connected: Boolean!, ip: String!, name: String!): Client!
   createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): RequestCS!
+  disconnectClientCS(sourceIp: String!): DisconnectedClient!
 }
 
 type Query {
@@ -67,5 +75,6 @@ type RequestParent {
 type Subscription {
   acquireCS_Created: AcquireCS
   clientCS_Connected(sourceIp: String!): ConnectedClient
+  clientCS_Disconnected(sourceIp: String!): DisconnectedClient
   requestCS_Created: RequestCS
 }

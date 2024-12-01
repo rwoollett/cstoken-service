@@ -15,10 +15,13 @@ import {
   subcribeRequestCSResolver,
   subcribeConnectedCSResolver,
   connectClientCSResolver,
-  subcribeAcquireCSResolver
+  subcribeAcquireCSResolver,
+  disconnectClientCSResolver,
+  subcribeDisconnectedCSResolver
 } from '../resolvers/cstoken';
 import {
   ClientCSConnectedEvent,
+  ClientCSDisconnectedEvent,
   Subjects
 } from "../../events";
 import { withFilter } from 'graphql-subscriptions';
@@ -46,6 +49,7 @@ export const Client = objectType({
     t.nonNull.string('name')
     t.nonNull.boolean('connected')
     t.nonNull.string('connectedAt')
+    t.nonNull.string('disconnectedAt')
     t.nonNull.field('requestParent', {
       type: RequestParent,
       description: "The client ip associated request parent record(always the same two record using ip)"
@@ -64,6 +68,18 @@ export const ConnectedClient = objectType({
       t.nonNull.string('connectedAt')
   },
   description: "Connected client to an ip on network CS"
+})
+
+/**
+ * DisconnectedClient
+ */
+export const DisconnectedClient = objectType({
+  name: 'DisconnectedClient',
+  definition(t) {
+    t.nonNull.string('sourceIp'),
+      t.nonNull.string('disconnectedAt')
+  },
+  description: "Disconnected client from an ip on network CS"
 })
 
 /**
@@ -135,6 +151,13 @@ export const CSTokenMutations = extendType({
       },
       resolve: connectClientCSResolver
     });
+    t.nonNull.field('disconnectClientCS', {
+      type: 'DisconnectedClient',
+      args: {
+        sourceIp: nonNull(stringArg())
+      },
+      resolve: disconnectClientCSResolver
+    });
     t.nonNull.field('createRequestCS', {
       type: 'RequestCS',
       args: {
@@ -171,6 +194,20 @@ export const Subscription = extendType({
           );
         }),
       resolve: subcribeConnectedCSResolver
+    });
+    t.field(Subjects.ClientCSDisconnected, {
+      type: 'DisconnectedClient',
+      args: {
+        sourceIp: nonNull(stringArg())
+      },
+      subscribe: withFilter(
+        (_root, _args, ctx) => ctx.pubsub.asyncIterator(Subjects.ClientCSDisconnected),
+        (clientDisconnect: ClientCSDisconnectedEvent, variables) => {
+          return (
+            clientDisconnect.data.sourceIp === variables.sourceIp
+          );
+        }),
+      resolve: subcribeDisconnectedCSResolver
     });
     t.field(Subjects.RequestCSCreated, {
       type: 'RequestCS',

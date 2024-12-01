@@ -40,6 +40,7 @@ export interface NexusGenObjects {
   Client: { // root type
     connected: boolean; // Boolean!
     connectedAt: string; // String!
+    disconnectedAt: string; // String!
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
@@ -47,6 +48,10 @@ export interface NexusGenObjects {
   }
   ConnectedClient: { // root type
     connectedAt: string; // String!
+    sourceIp: string; // String!
+  }
+  DisconnectedClient: { // root type
+    disconnectedAt: string; // String!
     sourceIp: string; // String!
   }
   Mutation: {};
@@ -83,6 +88,7 @@ export interface NexusGenFieldTypes {
   Client: { // field return type
     connected: boolean; // Boolean!
     connectedAt: string; // String!
+    disconnectedAt: string; // String!
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
@@ -92,11 +98,16 @@ export interface NexusGenFieldTypes {
     connectedAt: string; // String!
     sourceIp: string; // String!
   }
+  DisconnectedClient: { // field return type
+    disconnectedAt: string; // String!
+    sourceIp: string; // String!
+  }
   Mutation: { // field return type
     connectClientCS: NexusGenRootTypes['ConnectedClient']; // ConnectedClient!
     createAcquireCS: NexusGenRootTypes['AcquireCS']; // AcquireCS!
     createClient: NexusGenRootTypes['Client']; // Client!
     createRequestCS: NexusGenRootTypes['RequestCS']; // RequestCS!
+    disconnectClientCS: NexusGenRootTypes['DisconnectedClient']; // DisconnectedClient!
   }
   Query: { // field return type
     getClients: Array<NexusGenRootTypes['Client'] | null>; // [Client]!
@@ -114,6 +125,7 @@ export interface NexusGenFieldTypes {
   Subscription: { // field return type
     acquireCS_Created: NexusGenRootTypes['AcquireCS'] | null; // AcquireCS
     clientCS_Connected: NexusGenRootTypes['ConnectedClient'] | null; // ConnectedClient
+    clientCS_Disconnected: NexusGenRootTypes['DisconnectedClient'] | null; // DisconnectedClient
     requestCS_Created: NexusGenRootTypes['RequestCS'] | null; // RequestCS
   }
 }
@@ -127,6 +139,7 @@ export interface NexusGenFieldTypeNames {
   Client: { // field return type name
     connected: 'Boolean'
     connectedAt: 'String'
+    disconnectedAt: 'String'
     id: 'Int'
     ip: 'String'
     name: 'String'
@@ -136,11 +149,16 @@ export interface NexusGenFieldTypeNames {
     connectedAt: 'String'
     sourceIp: 'String'
   }
+  DisconnectedClient: { // field return type name
+    disconnectedAt: 'String'
+    sourceIp: 'String'
+  }
   Mutation: { // field return type name
     connectClientCS: 'ConnectedClient'
     createAcquireCS: 'AcquireCS'
     createClient: 'Client'
     createRequestCS: 'RequestCS'
+    disconnectClientCS: 'DisconnectedClient'
   }
   Query: { // field return type name
     getClients: 'Client'
@@ -158,6 +176,7 @@ export interface NexusGenFieldTypeNames {
   Subscription: { // field return type name
     acquireCS_Created: 'AcquireCS'
     clientCS_Connected: 'ConnectedClient'
+    clientCS_Disconnected: 'DisconnectedClient'
     requestCS_Created: 'RequestCS'
   }
 }
@@ -181,6 +200,9 @@ export interface NexusGenArgTypes {
       relayed: boolean; // Boolean!
       sourceIp: string; // String!
     }
+    disconnectClientCS: { // args
+      sourceIp: string; // String!
+    }
   }
   Query: {
     getClients: { // args
@@ -189,6 +211,9 @@ export interface NexusGenArgTypes {
   }
   Subscription: {
     clientCS_Connected: { // args
+      sourceIp: string; // String!
+    }
+    clientCS_Disconnected: { // args
       sourceIp: string; // String!
     }
   }
