@@ -22,8 +22,6 @@ import {
   Subjects
 } from "../../events";
 import { withFilter } from 'graphql-subscriptions';
-//import { withFilter } from "graphql-subscriptions";
-//import { CommentCreatedEvent } from '../../events';
 
 /**
  * RequestParent
@@ -47,6 +45,7 @@ export const Client = objectType({
     t.nonNull.string('ip')
     t.nonNull.string('name')
     t.nonNull.boolean('connected')
+    t.nonNull.string('connectedAt')
     t.nonNull.field('requestParent', {
       type: RequestParent,
       description: "The client ip associated request parent record(always the same two record using ip)"

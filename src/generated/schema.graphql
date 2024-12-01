@@ -12,6 +12,7 @@ type AcquireCS {
 """Clients to request and acquire the single token for CS"""
 type Client {
   connected: Boolean!
+  connectedAt: String!
   id: Int!
   ip: String!
   name: String!

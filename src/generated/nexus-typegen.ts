@@ -39,6 +39,7 @@ export interface NexusGenObjects {
   }
   Client: { // root type
     connected: boolean; // Boolean!
+    connectedAt: string; // String!
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
@@ -81,6 +82,7 @@ export interface NexusGenFieldTypes {
   }
   Client: { // field return type
     connected: boolean; // Boolean!
+    connectedAt: string; // String!
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
@@ -124,6 +126,7 @@ export interface NexusGenFieldTypeNames {
   }
   Client: { // field return type name
     connected: 'Boolean'
+    connectedAt: 'String'
     id: 'Int'
     ip: 'String'
     name: 'String'

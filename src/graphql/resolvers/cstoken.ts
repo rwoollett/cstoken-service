@@ -17,6 +17,7 @@ export const getClientsResolver: FieldResolver<
       ip: true,
       name: true,
       connected: true,
+      connectedAt: true,
       RequestParent: true,
     },
     where: {
@@ -29,7 +30,9 @@ export const getClientsResolver: FieldResolver<
 
   return [...clients].map((client) => (
     {
-      ...client, requestParent: {
+      ...client, 
+        connectedAt: client.connectedAt.toISOString(),
+        requestParent: {
         id: client.RequestParent.id,
         clientIp: client.RequestParent.clientIp
       }
@@ -67,6 +70,7 @@ export const createClientResolver: FieldResolver<
     ip,
     name,
     connected,
+    connectedAt: newClient.connectedAt.toISOString(),
     requestParent: {
       id: parentRecord.id,
       clientIp: parentRecord.clientIp
