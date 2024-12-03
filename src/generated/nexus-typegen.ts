@@ -218,7 +218,6 @@ export interface NexusGenArgTypes {
   }
   Subscription: {
     clientCS_Connected: { // args
-      processId: string; // String!
       sourceIp: string; // String!
     }
     clientCS_Disconnected: { // args

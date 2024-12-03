@@ -76,7 +76,7 @@ type RequestParent {
 
 type Subscription {
   acquireCS_Created: AcquireCS
-  clientCS_Connected(processId: String!, sourceIp: String!): ConnectedClient
+  clientCS_Connected(sourceIp: String!): ConnectedClient
   clientCS_Disconnected(sourceIp: String!): DisconnectedClient
   requestCS_Created: RequestCS
 }
