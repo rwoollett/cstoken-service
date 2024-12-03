@@ -44,10 +44,12 @@ export interface NexusGenObjects {
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
+    processId?: string | null; // String
     requestParent: NexusGenRootTypes['RequestParent']; // RequestParent!
   }
   ConnectedClient: { // root type
     connectedAt: string; // String!
+    processId: string; // String!
     sourceIp: string; // String!
   }
   DisconnectedClient: { // root type
@@ -92,10 +94,12 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     ip: string; // String!
     name: string; // String!
+    processId: string | null; // String
     requestParent: NexusGenRootTypes['RequestParent']; // RequestParent!
   }
   ConnectedClient: { // field return type
     connectedAt: string; // String!
+    processId: string; // String!
     sourceIp: string; // String!
   }
   DisconnectedClient: { // field return type
@@ -143,10 +147,12 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     ip: 'String'
     name: 'String'
+    processId: 'String'
     requestParent: 'RequestParent'
   }
   ConnectedClient: { // field return type name
     connectedAt: 'String'
+    processId: 'String'
     sourceIp: 'String'
   }
   DisconnectedClient: { // field return type name
@@ -184,6 +190,7 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Mutation: {
     connectClientCS: { // args
+      processId: string; // String!
       sourceIp: string; // String!
     }
     createAcquireCS: { // args
@@ -211,6 +218,7 @@ export interface NexusGenArgTypes {
   }
   Subscription: {
     clientCS_Connected: { // args
+      processId: string; // String!
       sourceIp: string; // String!
     }
     clientCS_Disconnected: { // args

@@ -17,6 +17,7 @@ type Client {
   id: Int!
   ip: String!
   name: String!
+  processId: String
 
   """
   The client ip associated request parent record(always the same two record using ip)
@@ -27,6 +28,7 @@ type Client {
 """Connected client to an ip on network CS"""
 type ConnectedClient {
   connectedAt: String!
+  processId: String!
   sourceIp: String!
 }
 
@@ -37,7 +39,7 @@ type DisconnectedClient {
 }
 
 type Mutation {
-  connectClientCS(sourceIp: String!): ConnectedClient!
+  connectClientCS(processId: String!, sourceIp: String!): ConnectedClient!
   createAcquireCS(ip: String!, sourceIp: String!): AcquireCS!
   createClient(connected: Boolean!, ip: String!, name: String!): Client!
   createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): RequestCS!
@@ -74,7 +76,7 @@ type RequestParent {
 
 type Subscription {
   acquireCS_Created: AcquireCS
-  clientCS_Connected(sourceIp: String!): ConnectedClient
+  clientCS_Connected(processId: String!, sourceIp: String!): ConnectedClient
   clientCS_Disconnected(sourceIp: String!): DisconnectedClient
   requestCS_Created: RequestCS
 }

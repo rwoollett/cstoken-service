@@ -5,6 +5,7 @@ export interface ClientCSConnectedEvent {
   data: {
     sourceIp: string;
     connectedAt: string;
+    processId: string;
   };
 }
 

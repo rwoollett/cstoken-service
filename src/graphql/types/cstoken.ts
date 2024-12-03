@@ -49,6 +49,7 @@ export const Client = objectType({
     t.nonNull.string('name')
     t.nonNull.boolean('connected')
     t.nonNull.string('connectedAt')
+    t.string('processId')
     t.nonNull.string('disconnectedAt')
     t.nonNull.field('requestParent', {
       type: RequestParent,
@@ -64,8 +65,9 @@ export const Client = objectType({
 export const ConnectedClient = objectType({
   name: 'ConnectedClient',
   definition(t) {
-    t.nonNull.string('sourceIp'),
-      t.nonNull.string('connectedAt')
+    t.nonNull.string('sourceIp')
+    t.nonNull.string('processId')
+    t.nonNull.string('connectedAt')
   },
   description: "Connected client to an ip on network CS"
 })
@@ -76,8 +78,8 @@ export const ConnectedClient = objectType({
 export const DisconnectedClient = objectType({
   name: 'DisconnectedClient',
   definition(t) {
-    t.nonNull.string('sourceIp'),
-      t.nonNull.string('disconnectedAt')
+    t.nonNull.string('sourceIp')
+    t.nonNull.string('disconnectedAt')
   },
   description: "Disconnected client from an ip on network CS"
 })
@@ -147,7 +149,8 @@ export const CSTokenMutations = extendType({
     t.nonNull.field('connectClientCS', {
       type: 'ConnectedClient',
       args: {
-        sourceIp: nonNull(stringArg())
+        sourceIp: nonNull(stringArg()),
+        processId: nonNull(stringArg())
       },
       resolve: connectClientCSResolver
     });
@@ -184,7 +187,8 @@ export const Subscription = extendType({
     t.field(Subjects.ClientCSConnected, {
       type: 'ConnectedClient',
       args: {
-        sourceIp: nonNull(stringArg())
+        sourceIp: nonNull(stringArg()),
+        processId: nonNull(stringArg())
       },
       subscribe: withFilter(
         (_root, _args, ctx) => ctx.pubsub.asyncIterator(Subjects.ClientCSConnected),

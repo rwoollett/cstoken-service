@@ -19,6 +19,7 @@ export const getClientsResolver: FieldResolver<
       name: true,
       connected: true,
       connectedAt: true,
+      processId: true,
       disconnectedAt: true,
       RequestParent: true,
     },
@@ -83,7 +84,7 @@ export const createClientResolver: FieldResolver<
 
 export const connectClientCSResolver: FieldResolver<
   "Mutation", "connectClientCS"
-> = async (_, { sourceIp }, { prisma, pubsub }) => {
+> = async (_, { sourceIp, processId }, { prisma, pubsub }) => {
 
   const connectedAt = new Date().toISOString();
   await prisma.client.update({
@@ -93,7 +94,8 @@ export const connectClientCSResolver: FieldResolver<
     data: {
       ip: sourceIp,
       connected: true,
-      connectedAt: connectedAt
+      connectedAt: connectedAt,
+      processId
     }
   });
 
@@ -101,10 +103,10 @@ export const connectClientCSResolver: FieldResolver<
   pubsub && pubsub.publish(Subjects.ClientCSConnected,
     {
       subject: Subjects.ClientCSConnected,
-      data: { sourceIp, connectedAt }
+      data: { sourceIp, connectedAt, processId }
     } as ClientCSConnectedEvent);
 
-  return { sourceIp, connectedAt }
+  return { sourceIp, connectedAt, processId }
 };
 
 export const disconnectClientCSResolver: FieldResolver<
@@ -118,7 +120,8 @@ export const disconnectClientCSResolver: FieldResolver<
     },
     data: {
       ip: sourceIp,
-      connected: true,
+      connected: false,
+      processId: null,
       disconnectedAt: disconnectedAt
     }
   });
@@ -163,8 +166,8 @@ export const createAcquireCSResolver: FieldResolver<
 };
 
 export const subcribeConnectedCSResolver = (payload: ClientCSConnectedEvent) => {
-  const { sourceIp, connectedAt } = payload.data;
-  return { sourceIp, connectedAt };
+  const { sourceIp, processId, connectedAt } = payload.data;
+  return { sourceIp, processId, connectedAt };
 };
 
 export const subcribeDisconnectedCSResolver = (payload: ClientCSDisconnectedEvent) => {
