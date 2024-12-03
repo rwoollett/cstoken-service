@@ -187,8 +187,7 @@ export const Subscription = extendType({
     t.field(Subjects.ClientCSConnected, {
       type: 'ConnectedClient',
       args: {
-        sourceIp: nonNull(stringArg()),
-        processId: nonNull(stringArg())
+        sourceIp: nonNull(stringArg())
       },
       subscribe: withFilter(
         (_root, _args, ctx) => ctx.pubsub.asyncIterator(Subjects.ClientCSConnected),
