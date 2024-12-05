@@ -3,13 +3,14 @@
 <br />
 The CSToken GraphQL service uses Nexus schema and Prisma for the SQL database.
 
-The CSToken service holds the network ip available for client appplications
-to connect to so they can share resources with a CS token. The need to hold the 
-CS token to access the shared resources.
-The can get connected into a shared network by using the clients ip and names 
-availabe form CSToken service.
-The service uses subscriptions to notify the access to obtaing the CS token.
-Notifications can be used in a Web Dashboard application.
+The CSToken service holds the network ips available for client appplications
+to connect to so they can share resources with a CS token. 
+Once connected onto the CSToken service via an ip the application can use the 
+service to mutate the request and acquire events to notifiy when they get the CSToken.
+The client application is responsible for obtaining the CSToken with the other clients.
+
+The CSToken service is made to be used in a Web Dashboard application to be notified of the
+actions made to gain a CSToken. 
 
 <br/>
 
@@ -100,12 +101,11 @@ This requires docker and docker compose installed on your system.
 npm run dev
 ```
 
-The application depends on a local Postgre database and an instance of Rabbit MQ.
+The application depends on a local Postgres database and an instance of Rabbit MQ.
 If not present the dev command will error.
 
 Runs the app in the development mode.\
-Open [http://localhost:3002](http://localhost:3002) to view it in the browser.
-Open [http://localhost:3002/api/graphql](http://localhost:3002/api/graphql) to view playground.
+Open [http://localhost:3002/api/graphql](http://localhost:3002/graphql) to view playground.
 
 ## Setup RabbitMQ for dev if not using docker-compose
 ```
@@ -114,11 +114,11 @@ docker run --hostname my-rabbit -p 5672:5672 rabbitmq:3
 ```
 
 ## Setup a Postgres for dev if not using docker-compose
-Use a docker container to ease seup of postgres.
-Sometimes users will have local postgres installed. It is not required and a docker container can be used.
+Use a docker container to ease setup of postgres.
+Sometimes users will have local postgres installed. It is not required and a docker container can be used.\
 An env variable like this required: DATABASE_URL="postgresql://postgres:password@localhost:5432/cstoken?schema=public"
 
-Check the port for connection, "-p <local port>:<image instance exposed port>" in the run command below.
+Check the port for connection, "-p <local port>:<image instance exposed port>" in the run command below.\
 Usually 5432:5432 is always used. Postgres uses 5432 as the default exposed port in the running container.
 Other local postgres instance could be using port 5432, so review your setup.
 
