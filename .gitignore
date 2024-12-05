@@ -12,6 +12,7 @@ api.http
 cstoken.env
 compose.env
 IntrospectionQuery.*
+!IntrospectionQuery.graphql
 GeneratedCode.hpp
 
 # testing
