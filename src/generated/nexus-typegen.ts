@@ -59,6 +59,7 @@ export interface NexusGenObjects {
   Mutation: {};
   Query: {};
   RequestCS: { // root type
+    originalIp: string; // String!
     parentIp: string; // String!
     relayed: boolean; // Boolean!
     requestedAt: string; // String!
@@ -117,6 +118,7 @@ export interface NexusGenFieldTypes {
     getClients: Array<NexusGenRootTypes['Client'] | null>; // [Client]!
   }
   RequestCS: { // field return type
+    originalIp: string; // String!
     parentIp: string; // String!
     relayed: boolean; // Boolean!
     requestedAt: string; // String!
@@ -170,6 +172,7 @@ export interface NexusGenFieldTypeNames {
     getClients: 'Client'
   }
   RequestCS: { // field return type name
+    originalIp: 'String'
     parentIp: 'String'
     relayed: 'Boolean'
     requestedAt: 'String'
@@ -203,6 +206,7 @@ export interface NexusGenArgTypes {
       name: string; // String!
     }
     createRequestCS: { // args
+      originalIp: string; // String!
       parentIp: string; // String!
       relayed: boolean; // Boolean!
       sourceIp: string; // String!

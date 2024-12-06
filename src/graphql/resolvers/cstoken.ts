@@ -138,16 +138,16 @@ export const disconnectClientCSResolver: FieldResolver<
 
 export const createRequestCSResolver: FieldResolver<
   "Mutation", "createRequestCS"
-> = async (_, { sourceIp, parentIp, relayed }, { pubsub }) => {
+> = async (_, { sourceIp, originalIp, parentIp, relayed }, { pubsub }) => {
   const requestedAt = new Date().toISOString();
 
   pubsub && pubsub.publish(Subjects.RequestCSCreated,
     {
       subject: Subjects.RequestCSCreated,
-      data: { sourceIp, parentIp, requestedAt, relayed }
+      data: { sourceIp, originalIp, parentIp, requestedAt, relayed }
     } as RequestCSCreatedEvent);
 
-  return { sourceIp, parentIp, requestedAt, relayed }
+  return { sourceIp, originalIp, parentIp, requestedAt, relayed }
 };
 
 
@@ -179,6 +179,7 @@ export const subcribeRequestCSResolver = (payload: RequestCSCreatedEvent) => {
   const { data: requestCS } = payload;
   return {
     sourceIp: requestCS.sourceIp,
+    originalIp: requestCS.originalIp,
     parentIp: requestCS.parentIp,
     requestedAt: requestCS.requestedAt,
     relayed: requestCS.relayed

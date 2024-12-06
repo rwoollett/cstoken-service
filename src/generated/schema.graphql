@@ -42,7 +42,7 @@ type Mutation {
   connectClientCS(processId: String!, sourceIp: String!): ConnectedClient!
   createAcquireCS(ip: String!, sourceIp: String!): AcquireCS!
   createClient(connected: Boolean!, ip: String!, name: String!): Client!
-  createRequestCS(parentIp: String!, relayed: Boolean!, sourceIp: String!): RequestCS!
+  createRequestCS(originalIp: String!, parentIp: String!, relayed: Boolean!, sourceIp: String!): RequestCS!
   disconnectClientCS(sourceIp: String!): DisconnectedClient!
 }
 
@@ -58,10 +58,9 @@ input RangePort {
   to: Int!
 }
 
-"""
-A request for CS from a client source ip to its currently known parent ip in the distributed tree
-"""
+"A request for CS from a client source ip to its currently known parent ip in the distributed tree\nIf relayed Request, it is because a parentIP was not the root, or is unreachable.\nThe originalIp is the real client wanting to enter CS and acquire token.\nAnd when relayed, the sourceIp was the parent ip of the previous relayed sourceIp.\n"
 type RequestCS {
+  originalIp: String!
   parentIp: String!
   relayed: Boolean!
   requestedAt: String!

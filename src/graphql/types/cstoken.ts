@@ -91,11 +91,15 @@ export const RequestCS = objectType({
   name: 'RequestCS',
   definition(t) {
     t.nonNull.string('requestedAt')
-    t.nonNull.boolean('relayed')
     t.nonNull.string('sourceIp')
+    t.nonNull.string('originalIp')
+    t.nonNull.boolean('relayed')
     t.nonNull.string('parentIp')
   },
-  description: "A request for CS from a client source ip to its currently known parent ip in the distributed tree"
+  description: "A request for CS from a client source ip to its currently known parent ip in the distributed tree\n" +
+    "If relayed Request, it is because a parentIP was not the root, or is unreachable.\n" +
+    "The originalIp is the real client wanting to enter CS and acquire token.\n" +
+    "And when relayed, the sourceIp was the parent ip of the previous relayed sourceIp.\n"
 });
 
 /**
@@ -165,6 +169,7 @@ export const CSTokenMutations = extendType({
       type: 'RequestCS',
       args: {
         sourceIp: nonNull(stringArg()),
+        originalIp: nonNull(stringArg()),
         parentIp: nonNull(stringArg()),
         relayed: nonNull(booleanArg())
       },

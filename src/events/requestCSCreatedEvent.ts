@@ -6,6 +6,7 @@ export interface RequestCSCreatedEvent {
     requestedAt: string;
     relayed: boolean;
     sourceIp: string;
+    originalIp: string;
     parentIp: string;
   };
 }
