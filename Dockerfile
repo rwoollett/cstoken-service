@@ -1,9 +1,8 @@
 
-FROM node:20.18-alpine as base
+FROM node:20.18 as base
 
 FROM base AS deps
-RUN apk update
-# && apk add --no-cache bash vips-dev
+
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 

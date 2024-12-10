@@ -5,7 +5,8 @@
     "module": "commonjs",
     "lib": [
       "ESNext",
-      "esnext.asynciterable"
+      "esnext.asynciterable",
+      "es2018.asynciterable"
     ],
     "rootDirs": [
       "."
