@@ -9,10 +9,8 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { Context } from './context';
 import { schema } from '../graphql/schema';
-import { rabbitWrapper } from '../lib/rabbitWrapper';
-
+import { PubSub } from 'graphql-subscriptions'; // inmemory pubsub 
 import { prisma } from "../lib/prismaClient";
-import { AMQPPubSub } from 'graphql-amqp-subscriptions';
 
 const PORT = process.env.PORT || 4000
 
@@ -21,33 +19,9 @@ const httpServer = createServer(app)
 
 async function start() {
 
-  if (!process.env.RABBIT_USER) {
-    throw new Error('RABBIT_USER must be defined');
-  }
-  if (!process.env.RABBIT_PASS) {
-    throw new Error('RABBIT_PASS must be defined');
-  }
-  if (!process.env.RABBIT_HOST) {
-    throw new Error('RABBIT_HOST must be defined');
-  }
-
-  try {
-    await rabbitWrapper.connect(
-      process.env.RABBIT_USER,
-      process.env.RABBIT_PASS,
-      process.env.RABBIT_HOST
-    );
-  
-  } catch (e) {
-    console.log('RabbitMQ connect: ', e);
-    throw new Error('RabbitMQ must be connected');
-  }
-
   const context: Context = {
     prisma: prisma,
-    pubsub: new AMQPPubSub({
-      connection: rabbitWrapper.client
-    })
+    pubsub: new PubSub()
   }
 
   /** Create WS Server */
@@ -97,7 +71,7 @@ async function start() {
       })
       await server.stop();
       closed[1] = true;
-      await rabbitWrapper.disconnect();
+      //await rabbitWrapper.disconnect();
     } catch (err) {
       console.log('Process exit', err);
     }
