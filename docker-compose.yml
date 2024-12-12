@@ -2,15 +2,15 @@
 services:
   cstoken:
     container_name: cstoken
-    image: cstoken-dev:v1.0
+    image: cstoken:v1.0
     build:
       context: .
       dockerfile: Dockerfile
-    develop:
-      watch:
-        - path: src/
-          action: sync
-          target: /app/src
+    # develop:
+    #   watch:
+    #     - path: src/
+    #       action: sync
+    #       target: /app/src
     restart: unless-stopped
     env_file: .env
     environment:
@@ -61,6 +61,9 @@ services:
     ports:
       - '15672:15672'
       - '5672:5672'
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq      
     networks:
       - cstoken-network
 
